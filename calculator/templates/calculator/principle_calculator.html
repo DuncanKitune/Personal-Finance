@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculate Principal</title>
+</head>
+<Style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 40px;
+        background-color: #f4f4f9;
+        color: #333;
+    }
+    form {
+        margin: 20px 0;
+    }
+    input, button {
+        padding: 10px;
+        margin: 5px;
+    }
+    .result {
+        margin-top: 20px;
+        padding: 20px;
+        background-color: #e2f4d3;
+        border: 1px solid #b2d8a3;
+        color: #38761d;
+        font-size: 24px;
+    }
+    p{
+        font-size: smaller;
+        font-style: normal;
+        color: gray;
+
+    }
+</Style>
+
+<body>
+    <h1>Calculate Instalments Amount</h1>
+    <a href="/calculator/templates/calculator/main_menu.html" class="">Home</a>
+    <p>Perhaps you have a taget amount eg Your architect told you that your dream house will cost 10,000,000 or your realtor told you the cost of land or that higher education you want to undertake or even you want to buy a car and you want to know if within a certain period eg 3 years, you can raise the amount needed without necessarily getting external financing eg loans etc. 
+        <br>Calculate the amount you will need to save per period (instalments) within your targeted years to achieve your goal here.</p>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="number" name="annual_rate" placeholder="Annual Interest Rate (%)">
+        <input type="number" name="years" placeholder="Number of Years">
+        <input type="number" name="compounds_per_year" placeholder="No. of Instalments Per Year">
+        <input type="number" name="target_amount" placeholder="Desired Future Value">
+        <button type="submit">Calculate</button>
+    </form>
+    {% if principal %}
+    <div class="result">
+        <h2>Required Principal: {{ principal }} KES</h2>
+    </div>
+    {% endif %}
+</body>
+</html>

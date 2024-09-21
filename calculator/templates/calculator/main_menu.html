@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money Maestro: My Personal Finance Manager</title>
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 40px;
+        background-color: #f4f4f9;
+        color: #333;
+    }
+    h1{
+        text-align: center;
+        padding: auto;
+        margin: auto;
+    }
+    table {
+            width: 50%;
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        td {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+    form {
+        margin: 20px 0;
+    }
+    input, button {
+        padding: 10px;
+        margin: 5px;
+    }
+    .result {
+        margin-top: 20px;
+        padding: 20px;
+        background-color: #e2f4d3;
+        border: 1px solid #b2d8a3;
+        color: #38761d;
+        font-size: 24px;
+    }
+    p{
+        font-size: large;
+        font-style: normal;
+        color: gray;
+    }
+
+    #footer {
+        display: flex;
+        justify-content: space-between; /* This will space the footer items evenly */
+        align-items: center; /* Aligns items vertically in the center */
+        background-color: #38761d; /* Green background */
+        color: white; /* Text color set to white */
+        padding: 10px; /* Adds padding inside the footer */
+        font-size: medium;
+    }
+    .footer{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        position: relative;
+        height: 2rem;
+    }
+    .footer li{
+        color: white;
+        font-size: small;
+        text-decoration: none;
+        list-style: none;
+    }
+    .footer ul{
+        padding: 0;
+        margin: 0;
+    }
+    .footer a {
+        font-size: small;
+        color: white;
+        text-decoration: none;
+    } 
+    @media(max-width: 768px){
+        .services{
+        max-height: 750px;
+        overflow-y: auto;
+        }
+    }
+</style>
+<body>
+    <h1> <b>Money Maestro:</b>Your Personal Finances Coach</h1>
+    <p>Don't have have an accounting, financial or economics background? <b>No Problem!</b></p><p>We help you simplify your finances, make smart decisions, and achieve your financial goals effortlessly.</p>
+    <!-- <div> -->
+    <!-- <h1 style="text-align:center;">Main Menu</h1> -->
+    <table>
+        <thead>
+            <tr>
+                <th>Functionality</th>
+                <th>Link</th>
+            </tr>
+        </thead>
+        <tbody>
+            <h2>Select a Calculator</h2>
+            <tr>
+                <td>Calculate Future Value</td>
+                <td><a href="{% url 'calculate_future_value' %}">Calculate The Future Value of Your Investment</a></td>
+            </tr>
+            <tr>
+                <td>Calculate Principal</td>
+                <td><a href="{% url 'calculate_principle' %}">Calculate Savings Instalments</a></td>
+            </tr>
+        </tbody>
+    </table>
+        <!-- <h2>Select a Calculator</h2>
+        <ul>
+            <li><a href="{% url 'calculate_future_value' %}">Calculate The Future Value of Your Investment</a></li>
+            <li><a href="{% url 'calculate_principle' %}">Calculate Savings Instalments</a></li>
+        </ul> -->
+    </div>
+</body>
+
+<br><br><br><br><br><br>
+
+   <section id="footer">
+    <div class="footer">
+            <ul><li><a href="" target="_blank" class=""> <b>Powered by:</b> Dev Code Universe, KE </a></li> </ul></div>
+    <div class="footer"> 
+            <ul><li>&copy; 2024</li></ul></div>
+    <div class="footer">
+            <ul><li><a href="tel:+254720984457" target="_blank">Tel: +254 720 98 44 57 / 733 98 44 57 </a></li></ul></div>
+   </section>
+</html>
