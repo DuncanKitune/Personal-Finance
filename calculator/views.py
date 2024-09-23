@@ -3,7 +3,12 @@ from django.shortcuts import render
 # Create your views here.
 from django.http import HttpResponse
 from django.http import JsonResponse
-
+import random
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+import io
 # def calculate_future_value(request):
 #     return HttpResponse("The view is working!")
 
@@ -85,12 +90,67 @@ def net_worth_calculator(request):
         zipped_assets = zip(asset_names, asset_values)
         zipped_liabilities = zip(liability_names, liability_values)
 
+        # Prepare insights based on net worth
+        zero_net_worth_responses = [
+            "Your net worth is zero. Recommendation: Consider evaluating your assets and liabilities to find areas for improvement.",
+            "Your net worth is zero. Recommendation: Focus on building your savings to create a buffer for unexpected expenses.",
+            "Your net worth is zero. Recommendation: Assess your financial habits and seek ways to increase your income.",
+            "Consider creating a budget to track your income and expenses and identify areas to save.",
+            "Explore ways to increase your income, like taking on a side hustle or negotiating a raise.",
+            "Develop a plan to pay down debt, focusing on high-interest debts first.",
+            "Consult a financial advisor to develop a personalized wealth management plan eg DKC Consulting Africa @ +254 720 984 457."
+        ]
+        negative_net_worth_responses = [
+            "Your net worth is negative. If not careful, you might be relegated to bankruptcy. Recommendation: Review your expenses and liabilities.",
+            "Your net worth is negative. Recommendation: Create a strict budget to manage your finances effectively.",
+            "Consult a financial advisor to develop a personalized wealth management plan eg DKC Consulting Africa @ +254 720 984 457.",
+            "Your net worth is negative. Recommendation: Consider debt counseling and explore options for financial recovery.",
+            "Create a strict budget and prioritize essential expenses. Consider reducing discretionary spending.",
+            "Seek professional help from a credit counselor to develop a debt repayment strategy.",
+            "Explore options for consolidating debt to simplify management and potentially reduce interest rates."
+        ]
+        positive_net_worth_responses = [
+            "Diversify your investments to minimize risk and maximize long-term growth.",
+            "Consider contributing to a retirement savings account to secure your future.",
+            "Consult a financial advisor to develop a personalized wealth management plan eg DKC Consulting Africa @ +254 720 984 457.",
+            "Your net worth is positive. Recommendation: Consider investing your surplus to grow your wealth.",
+            "Your net worth is positive. Recommendation: Build a financial safety net by saving a portion of your income.",
+            "Your net worth is positive. Recommendation: Diversify your investments to minimize risks and enhance growth.",
+        ]
+
+        # Randomly select a response
+        if net_worth == 0:
+            insight = random.choice(zero_net_worth_responses)
+        elif net_worth < 0:
+            insight = random.choice(negative_net_worth_responses)
+        else:
+            insight = random.choice(positive_net_worth_responses)
+
+        # Render the results on the web page before downloading the PDF
+        if 'download_pdf' in request.POST:
+            # Create a PDF report
+            buffer = io.BytesIO()
+            p = canvas.Canvas(buffer, pagesize=letter)
+            p.drawString(100, 750, f"Net Worth Calculation Summary")
+            p.drawString(100, 730, f"Assets: {total_assets}")
+            p.drawString(100, 710, f"Liabilities: {total_liabilities}")
+            p.drawString(100, 690, f"Net Worth: {net_worth}")
+            p.drawString(100, 670, insight)
+            p.showPage()
+            p.save()
+
+            # Generate PDF response
+            buffer.seek(0)
+            return HttpResponse(buffer, content_type='application/pdf', headers={'Content-Disposition': 'attachment; filename="net_worth_summary.pdf"'})
+
+        # If the user hasn't requested a PDF, render the HTML template
         return render(request, 'calculator/net_worth_calculator.html', {
             'zipped_assets': zipped_assets,
             'zipped_liabilities': zipped_liabilities,
             'total_assets': total_assets,
             'total_liabilities': total_liabilities,
             'net_worth': net_worth,
+            'recommendation': insight
         })
 
     return render(request, 'calculator/net_worth_calculator.html')

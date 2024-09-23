@@ -96,6 +96,25 @@
             margin: auto; 
             background-color: #45a049;
         }
+        .btn-pdf {
+            margin: auto;
+            /* padding: auto; */
+            background-color: white;
+            color:  #4CAF50;
+            border: .1rem solid #45a049;
+            border-radius: 4px;
+            cursor: pointer;
+            height: 2rem;
+            align-self: center;
+            font-size: 16px;
+        }
+        .btn-pdf:hover{
+            background-color: #45a049;
+            color:  white;
+            border: .1rem solid white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
         #footer {
         display: flex;
         justify-content: space-between; /* This will space the footer items evenly */
@@ -229,6 +248,7 @@
     <br><br>
             <!-- Submit Button -->
             <button type="submit" class="submit-btn">Calculate</button>
+            
         </form>
     
         <!-- Display Results -->
@@ -238,6 +258,9 @@
         <p>Total Assets:        {{ total_assets }}</p>
         <p>Total Liabilities:   {{ total_liabilities }}</p>
         <p><b>Net Worth:        {{ net_worth }}</b></p>
+        <p><strong>Recommendation:</strong> {{ recommendation }}</p>
+        <button type="submit" name="download_pdf" class="btn-pdf">Download PDF</button>
+        <!-- <a href="{% url 'download_pdf' %}" class="btn btn-success mt-3">Download PDF Report</a> -->
         {% endif %}
         </div>
 </body>
@@ -245,7 +268,7 @@
 
     <section id="footer">
         <div class="footer">
-                <ul><li><a href="https://portfolio-duncan-kitune.netlify.app/" target="_blank" noopener="" class=""> <b>Powered by:</b></a></li> </ul></div>
+                <ul><li><a href="" target="_blank" noopener="" class=""> <b>Powered by:</b></a></li> </ul></div>
         <div class="footer">
                 <ul><li><a href="https://portfolio-duncan-kitune.netlify.app/" target="_blank" noopener="" class=""> <b></b> Dev Code Universe, KE </a></li> </ul></div>        
         <div class="footer">
