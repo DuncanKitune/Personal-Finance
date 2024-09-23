@@ -66,6 +66,64 @@ def calculate_principle(request):
 
 
 
+def net_worth_calculator(request):
+    if request.method == 'POST':
+        # Get asset and liability data from the request
+        asset_names = request.POST.getlist('asset_name')
+        asset_values = request.POST.getlist('asset_value')
+        liability_names = request.POST.getlist('liability_name')
+        liability_values = request.POST.getlist('liability_value')
+
+        # Calculate total assets and liabilities
+        total_assets = sum(float(value) for value in asset_values if value)
+        total_liabilities = sum(float(value) for value in liability_values if value)
+
+        # Calculate net worth
+        net_worth = total_assets - total_liabilities
+
+        # Zip asset names and values, liability names and values
+        zipped_assets = zip(asset_names, asset_values)
+        zipped_liabilities = zip(liability_names, liability_values)
+
+        return render(request, 'calculator/net_worth_calculator.html', {
+            'zipped_assets': zipped_assets,
+            'zipped_liabilities': zipped_liabilities,
+            'total_assets': total_assets,
+            'total_liabilities': total_liabilities,
+            'net_worth': net_worth,
+        })
+
+    return render(request, 'calculator/net_worth_calculator.html')
+
+# def net_worth_calculator(request):
+#     if request.method == 'POST':
+#         # Get asset and liability data from the request
+#         asset_names = request.POST.getlist('asset_name')
+#         asset_values = request.POST.getlist('asset_value')
+#         liability_names = request.POST.getlist('liability_name')
+#         liability_values = request.POST.getlist('liability_value')
+
+#         # Calculate total assets and liabilities
+#         total_assets = sum(float(value) for value in asset_values if value)
+#         total_liabilities = sum(float(value) for value in liability_values if value)
+
+#         # Calculate net worth
+#         net_worth = total_assets - total_liabilities
+
+#         # Pass the data back to the template
+#         return render(request, 'calculator/net_worth_calculator.html', {
+#             'asset_names': asset_names,
+#             'asset_values': asset_values,
+#             'liability_names': liability_names,
+#             'liability_values': liability_values,
+#             'total_assets': total_assets,
+#             'total_liabilities': total_liabilities,
+#             'net_worth': net_worth,
+#         })
+
+#     return render(request, 'calculator/net_worth_calculator.html')
+
+
 # from django.http import JsonResponse
 # import math
 # View to handle compound interest calculation

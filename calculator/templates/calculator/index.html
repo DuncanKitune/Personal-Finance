@@ -80,14 +80,14 @@
 </head>
 <body>
     <h1>Future Value of Investments</h1>
-    <a href="templates/calculator/main_menu.html" class="">Home</a>
-        <p>If you have a constant amount you want to save over a certain period of time eg 10 years and you want to save in regular intervals eg monthly(12), quarterly(4), half yearly(2) or once per year(1), then you can estimate the value of your investment in the future. 
+    <a href="{% url 'main_menu' %}" class="Home">Home</a>
+        <p>If you have a constant amount you want to save over a certain period of time eg 10 years and you want to save in regular intervals eg monthly(12), quarterly(4), half yearly(2) or once per year(1), then you can estimate what will be the value of your investment in the future at the end of your set period. 
             <br>NB: 
             <br>Assume you will not withdraw any amount including interest from the investment during the investment period. 
-            <br>Put the interest rate given by your Bank/SACCO or assume the Central Bank's rate of return of 10%</p>
+            <br>Use the interest rate given by your investment partner eg a Bank / SACCO or assume the Central Bank's base lending rate of 10%</p>
     <form method="POST" action="">
         {% csrf_token %}
-        <input type="number" name="principal" placeholder="Principal Amount (KES)" required><br>
+        <input type="number" name="principal" placeholder="Instalments Amount (KES)" required><br>
         <input type="number" step="0.01" name="annual_rate" placeholder="Annual Interest Rate (%)" required><br>
         <input type="number" name="years" placeholder="Number of Years" required><br>
         <input type="number" name="compounds_per_year" placeholder="Intervals Per Year" required><br>
@@ -100,18 +100,20 @@
     </div>
 {% endif %}
 </body>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
+<br><br><br><br><br><br>
+
    <section id="footer">
-    <div class="footer">
-            <ul><li><b>Powered by:</b> Dev Code Universe, KE</li> </ul></div>
-    <div class="footer"> 
-            <ul><li>&copy; 2024</li></ul></div>
-    <div class="footer">
+        <div class="footer">
+                <ul><li><a href="https://portfolio-duncan-kitune.netlify.app/" target="_blank" noopener="" class=""> <b>Powered by:</b></a></li> </ul></div>
+        <div class="footer">
+                <ul><li><a href="https://portfolio-duncan-kitune.netlify.app/" target="_blank" noopener="" class=""> <b></b> Dev Code Universe, KE </a></li> </ul></div>        
+        <div class="footer">
+                <ul><li><a href="#" target="_blank" noopener="" class="">&</a></li> </ul></div>
+        <div class="footer">
+                <ul><li><a href="https://consultingafrica.netlify.app/" target="_blank" noopener="" class=""> <b></b> DKC Consulting Africa </a></li> </ul></div>
+        <div class="footer"> 
+                <ul><li>&copy; 2024</li></ul></div>
+        <div class="footer">
             <ul><li><a href="tel:+254720984457" target="_blank">Tel: +254 720 98 44 57 / 733 98 44 57 </a></li></ul></div>
    </section>
 </html>
