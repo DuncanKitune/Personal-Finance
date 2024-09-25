@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Net Worth Calculator</title>
+   
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -19,24 +20,30 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         h1, .title {
-            text-align: center;
+            /* text-align: center; */
             margin: auto;
-            color: #45a049; 
-            font-size: 27px;           
+            /* color: #45a049;  */
+            font-size: 2rem;           
         }
         h2{
-            color: #45a049;
+            color: green;
             text-align: center;
             margin: auto;
             font-size: 18px;
         }
         h3{
-            color: #45a049;
+            color: gray;
             text-align: left;  
             font-size: 16px;          
         }
         p{
-            font-size: 14px;            
+            font-size: smaller;
+            color: gray;           
+        }
+        a {
+            text-decoration: none;
+            color: blueviolet;
+            font-weight: bold;
         }
         table {
             width: 50%;
@@ -48,32 +55,34 @@
         th, td {
             padding: 10px;
             border: 1px solid #ccc;
-            text-align: left;
-           
+            text-align: left;           
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #4CAF50;
+            color: white;
         }
         input[type="text"], input[type="number"] {
             width: 90%;
             padding: auto;
             font-size: 16px;
-            border-radius: 4px;
+            border-radius: 6px;
             border: 1px solid #ccc;
+            height: 2rem;
         }
         .add-line-btn {
             margin: auto;
-            /* padding: auto; */
-            background-color: #4CAF50;
-            color: white;
-            border: none;
+            padding: auto;
+            background-color: white;
+            color: #4CAF50;
+            border:.1rem solid #4CAF50;
             border-radius: 4px;
             cursor: pointer;
             width: 50%;
-            height: 2rem;
+            height: 1.5rem;
             align-self: center;
             display: flex;
-            font-size: 16px;
+            font-size: 1rem;
+            text-align: center;
         }
         .submit-btn {
             width: 100%;
@@ -81,14 +90,14 @@
             color: white;
             border: none;
             padding: 10px;
-            font-size: 16px;
+            font-size: 1.6rem;
             cursor: pointer;
             border-radius: 4px;
             margin-top: 10px;
-            font-size: 20px;
         }
         .submit-btn:hover, .add-line-btn:hover {
             background-color: #45a049;
+            color: white;
         }
         .result {
             text-align: center;
@@ -114,16 +123,16 @@
             border: .1rem solid white;
             border-radius: 4px;
             cursor: pointer;
-        }
+        }        
         #footer {
-        display: flex;
-        justify-content: space-between; /* This will space the footer items evenly */
-        align-items: center; /* Aligns items vertically in the center */
-        background-color: #38761d; /* Green background */
-        color: white; /* Text color set to white */
-        padding: 10px; /* Adds padding inside the footer */
-        font-size: medium;
-        }
+            display: flex;
+            justify-content: space-between; /* This will space the footer items evenly */
+            align-items: center; /* Aligns items vertically in the center */
+            background-color: #38761d; /* Green background */
+            color: white; /* Text color set to white */
+            padding: 10px; /* Adds padding inside the footer */
+            font-size: medium;
+            }
         .footer{
             display: flex;
             justify-content: space-between;
@@ -166,7 +175,34 @@
             font-size: 80%;
             flex-wrap: nowrap;
             padding: auto;
+            margin-left: 1rem;
+            width: 95%;
+            }
+        }
+        @media(max-width: 768px){
+            table{
+            /* font-size: 80%; */
+            flex-wrap: nowrap;
+            width: 95%;
+            padding: 1rem;
+            margin-left: 1rem;
+            }
+        }
+        @media(max-width: 768px){
+            th, td{
+            font-size: 1rem;
+            flex-wrap: nowrap;
+            /* width: 95%; */
+            padding: auto;
             margin: auto;
+            }
+        }
+        @media(max-width: 768px){
+            input[type="text"], input[type="number"]{
+            font-size: 1rem;
+            flex-wrap: nowrap;
+            width: 95%;
+          
             }
         }
     </style>
@@ -191,6 +227,16 @@
                 <td><input type="number" step="0.01" name="liability_value" placeholder="Enter value"></td>
             `;
         }
+
+        // adjust decimal points
+        // $(document).ready(function() {
+        // $('#numberInput').autoNumeric('init', {
+        //     decimalPlaces: 2, // Adjust the number of decimal places as needed
+        //     digitGroupSeparator: ',',
+        //     minimumValue: 0
+        // });
+        // });
+        // function to add rows
         // function addRow(type) {
         //     const table = document.getElementById(type + '-table');
         //     const newRow = table.insertRow();
@@ -203,27 +249,29 @@
     </script>
 </head>
 <body>
-    <body>
-        <h1 class="title">Calculate My Net Worth</h1>
+    
+        <h1 class="title">My Net Worth Calculator</h1>
+        <br>
         <a  href="{% url 'main_menu' %}" class="Home">Home</a>
             <p><b>What is Net Worth?</b></p>
             <p>Your net worth is a snapshot of your financial health. It's the difference between what you own (assets) and what you owe (liabilities).</p>
             <p><strong>Let's figure out your net worth together.</strong></p>
             <p>Simply enter your assets and liabilities below. Assets can include things like house, plots, cars, debtors, stocks, shares, savings accounts, investments, and property, while liabilities might be loans, credit card debt, mobile money loans, creditors, or mortgages.</p>
         <form method="POST">
-            {% csrf_token %}
-    
+            <br>
+
+            {% csrf_token %}    
             <!-- Assets Section -->
-            <h2>Assets</h2>
+            <h2>List your Assets</h2>
             <table id="assetTable">
                 <tr>
-                    <th>Asset</th>
+                    <th>Asset Name</th>
                     <th>Value</th>
                 </tr>
                 {% for name, value in zipped_assets %}
                 <tr>
                     <td><input type="text" name="asset_name" value="{{ name }}"></td>
-                    <td><input type="number" step="0.01" name="asset_value" value="{{ value }}"></td>
+                    <td><input type="number" pattern="\d+(,\d{3})*(\.\d+)?" oninput="formatNumber(this)" step="0.01" name="asset_value" value="{{ value }}"></td>
                 </tr>
                 {% endfor %}
             </table>
@@ -231,16 +279,16 @@
             <br>
     <br>
             <!-- Liabilities Section -->
-            <h2>Liabilities</h2>
+            <h2>List your Liabilities</h2>
             <table id="liabilityTable">
                 <tr>
-                    <th>Liability</th>
+                    <th>Liability Name</th>
                     <th>Value</th>
                 </tr>
                 {% for name, value in zipped_liabilities %}
                 <tr>
                     <td><input type="text" name="liability_name" value="{{ name }}"></td>
-                    <td><input type="number" step="0.01" name="liability_value" value="{{ value }}"></td>
+                    <td><input type="number" pattern="\d+(,\d{3})*(\.\d+)?" oninput="formatNumber(this)" step="0.01" name="liability_value" value="{{ value }}"></td>
                 </tr>
                 {% endfor %}
             </table>
@@ -250,18 +298,50 @@
             <button type="submit" class="submit-btn">Calculate</button>
             
         </form>
-    
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>ITEM</th>
+                    <th>VALUE</th>
+                    <th>REMARKS</th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                <h3>Below is the summary of your assets and liabilities and your net worth as of <p id="date"></p></h3>
+                
+                <tr>
+                    <td>Total Assets</td>
+                    <td><p>  {{ total_assets }}</p></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Total Liabilities</td>
+                    <td><p>{{ total_liabilities }}</p></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Net Worth</td>
+                    <td><p>{{ net_worth }}</p></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <p><strong>Recommendation:</strong> {{ recommendation }}</p>
+        
         <!-- Display Results -->
-        <div class="result">
+        <!-- <div class="result">
         {% if net_worth is not None %}
         <h3>Results</h3>
         <p>Total Assets:        {{ total_assets }}</p>
         <p>Total Liabilities:   {{ total_liabilities }}</p>
         <p><b>Net Worth:        {{ net_worth }}</b></p>
         <p><strong>Recommendation:</strong> {{ recommendation }}</p>
-        <button type="submit" name="download_pdf" class="btn-pdf">Download PDF</button>
+        <button type="submit" name="download_pdf" class="btn-pdf">Download PDF</button> -->
         <!-- <a href="{% url 'download_pdf' %}" class="btn btn-success mt-3">Download PDF Report</a> -->
         {% endif %}
+        <button type="submit" name="download_pdf" class="btn-pdf">Download PDF</button>
         </div>
 </body>
 <br><br><br><br><br><br>
@@ -280,5 +360,39 @@
         <div class="footer">
             <ul><li><a href="tel:+254720984457" target="_blank">Tel: +254 720 98 44 57 / 733 98 44 57 </a></li></ul></div>
     </section>
-</html>
+    <script src="https://cdn.jsdelivr.net/npm/autonumeric@4.0.0/dist/autoNumeric.min.js"></script>
+    <script>
+        function formatNumber(input) {
+            var value = input.value;
+            value = value.replace(/\D/g, ''); // Remove non-numeric characters
+            value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ','); // Insert commas
+            input.value = value;
+        }
+  
+        function displayDate() {
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+            var hh = String(today.getHours()).padStart(2, '0');
+            var mm = String(today.getMinutes()).padStart(2,   '0');
+            today = dd + '/' + mm + '/' + yyyy + ' ' + hh + ':' + mm;
+            document.getElementById("date").innerHTML = today;
+        }
+  
+        $(document).ready(function() {
+            // Initialize autoNumeric for asset and liability values
+            $('input[name="asset_value"]').autoNumeric('init', {
+            digitGroupSeparator: ',',
+            minimumValue: 0
+            });
+            $('input[name="liability_value"]').autoNumeric('init', {
+            digitGroupSeparator: ',',
+            minimumValue: 0
+            });
+    
+            // Call displayDate() to update the date immediately
+            displayDate();
+        });
+    </script>
 </html>

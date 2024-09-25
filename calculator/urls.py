@@ -7,4 +7,7 @@ urlpatterns = [
     path('calculate-principle/', views.calculate_principle, name='calculate_principle'),
     path('calculate-net-worth/', views.net_worth_calculator, name='net_worth_calculator'),
     path('calculate-net-worth/', views.net_worth_calculator, name='download_pdf'),
+    path('calculate-budget/', views.personal_budget, name='personal_budget'),
+    path('calculate-business-risk/', views.risk_calculations, name='risk_calculations'),
+    path('pdf/', views.generate_pdf, name='generate_pdf'),
 ]

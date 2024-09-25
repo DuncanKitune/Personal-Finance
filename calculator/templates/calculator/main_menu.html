@@ -60,6 +60,7 @@
             cursor: pointer;
             text-align: center;
             text-decoration: none;
+            align-items: left;
         }
 
         .menu-button:hover {
@@ -123,21 +124,25 @@
     }
 </style>
 <body>
+    {% csrf_token %}
     <h1> <b>Money Maestro</b> <br><span> my personal finances coach</span></h1>
-    <p>Don't have have an accounting, financial or economics background? <b>No Problem! No Need to Worry!</b></p><p>We help you simplify your finances, make smart decisions and achieve your financial goals effortlessly.</p>
+    <p>Don't have an accounting, financial or economics background? <b>No Problem! No Need to Worry!</b></p><p>We help you simplify your finances, make smart decisions and achieve your financial goals effortlessly.</p>
+    
+    <p><strong>Personal finances involve mastering:</strong> Future Values of Investments (Compound Interest, Time Value of money), Budgeting and Spending (Tracking expenses, Setting realistic goals), Debt Management (Credit cards, Student loans, Bank/ SACCO loans, etc), Investing (Risk tolerance, Diversification, etc), Retirement Planning (Saving enough, Investment Strategy), Estate Planning (Insurance, Trusts, etc.), Taxes (Tax Laws, Tax planning, etc), Financial Literacy (Basic concepts, Decision-making, etc)  </p>
     <br>
     <h3>Select an option for assistance:</h3>
-<br>
+
     <div class="button-container">
         <a class="menu-button" href="{% url 'calculate_future_value' %}">Compound</a>
         <a class="menu-button" href="{% url 'calculate_future_value' %}">Future Value Calculator</a>
         <a class="menu-button" href="{% url 'calculate_principle' %}">Savings Instalments Calculator</a>
-        <a class="menu-button" href="{% url 'calculate_principle' %}">Budgeting & Cashflow</a>
+        <a class="menu-button" href="{% url 'personal_budget' %}">Budgeting & Cashflow</a>
         <a class="menu-button" href="{% url 'net_worth_calculator' %}">Networth Calculator</a>
         <a class="menu-button" href="{% url 'calculate_principle' %}">Loan Armotization Schedule</a>
         <a class="menu-button" href="{% url 'calculate_principle' %}">Tax Liabilities Manager</a>
         <a class="menu-button" href="{% url 'calculate_principle' %}">Car Import Duty Calculator</a>
         <a class="menu-button" href="{% url 'calculate_principle' %}">Construction Materials Estimate</a>
+        <a class="menu-button" href="{% url 'risk_calculations' %}">Business Risk Analysis</a>
     </div>
 </body>
 <br><br><br><br><br><br>

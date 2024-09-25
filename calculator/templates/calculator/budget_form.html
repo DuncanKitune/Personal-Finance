@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Budget</title>
+</head>
+<style>
+    body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, .title {
+            /* text-align: center; */
+            margin: auto;
+            /* color: #45a049;  */
+            font-size: 27px;           
+        }
+        h2{
+            color: #45a049;
+            text-align: center;
+            margin: auto;
+            font-size: 18px;
+        }
+        h3{
+            color: #45a049;
+            text-align: left;  
+            font-size: 16px;          
+        }
+        p{
+            font-size: smaller;
+            color: gray;            
+        }
+        
+        input[type="text"], input[type="number"] {
+            width: 90%;
+            padding: auto;
+            font-size: 16px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            height: 2rem;
+        }
+        .add-line-btn {
+            margin: auto;
+            /* padding: auto; */
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 50%;
+            height: 1.5rem;
+            align-self: center;
+            display: flex;
+            font-size: 16px;
+        }
+        .submit-btn {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 20px;
+        }
+        .submit-btn:hover, .add-line-btn:hover {
+            background-color: #45a049;
+        }
+        .result {
+            text-align: center;
+            font-size: 16px;
+            margin: auto; 
+            background-color: #45a049;
+        }
+        .btn-pdf {
+            margin: auto;
+            /* padding: auto; */
+            background-color: white;
+            color:  #4CAF50;
+            border: .1rem solid #45a049;
+            border-radius: 4px;
+            cursor: pointer;
+            height: 2rem;
+            align-self: center;
+            font-size: 16px;
+        }
+        .btn-pdf:hover{
+            background-color: #45a049;
+            color:  white;
+            border: .1rem solid white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        table { 
+            width: 50%;
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        td {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+
+        a {
+            text-decoration: none;
+        }
+        p{
+            font-size: smaller;
+            color: gray;           
+        }
+        #footer {
+        display: flex;
+        justify-content: space-between; /* This will space the footer items evenly */
+        align-items: center; /* Aligns items vertically in the center */
+        background-color: #38761d; /* Green background */
+        color: white; /* Text color set to white */
+        padding: 10px; /* Adds padding inside the footer */
+        font-size: medium;
+        }
+        .footer{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            position: relative;
+            height: 2rem;
+        }
+        .footer li{
+            color: white;
+            font-size: small;
+            text-decoration: none;
+            list-style: none;
+        }
+        .footer ul{
+            padding: 0;
+            margin: 0;
+        }
+        .footer a {
+            font-size: small;
+            color: white;
+            text-decoration: none;
+        } 
+        @media(max-width: 768px){
+            table{
+            max-width: 100%;
+            padding: auto;
+            margin: auto;
+            }
+        }
+        @media(max-width: 768px){
+            .footer a{
+            gap: auto;
+            flex-wrap: wrap;
+            font-size: 80%;
+            }
+        }
+        @media(max-width: 768px){
+            .add-line-btn{
+            font-size: 80%;
+            flex-wrap: nowrap;
+            padding: auto;
+            margin: auto;
+            }
+        }
+        @media(max-width: 768px){
+            table{
+            /* font-size: 80%; */
+            flex-wrap: nowrap;
+            max-width: 100%;
+            padding: auto;
+            margin: auto;
+            }
+        }
+        @media(max-width: 768px){
+            table, th, td{
+            font-size: 1rem;
+            flex-wrap: nowrap;
+            max-width: 80%;
+            padding: auto;
+            margin: auto;
+            }
+        }
+        @media(max-width: 768px){
+            input[type="text"], input[type="number"]{
+            font-size: 1rem;
+            flex-wrap: nowrap;
+            max-width: 80%;
+            padding: auto;
+            margin: auto;
+            }
+        }
+</style>
+<body>
+    <h1>My Personal Budgeting & Cash flow Management</h1>
+    <br>
+    <a href="{% url 'main_menu' %}" class="Home">Home</a>
+
+    <br>
+    <p><b>What is personal Budgeting?</b> Many people struggling with managig t</p>
+    <form method="POST" action="{% url 'personal_budget' %}">
+        {% csrf_token %}
+    
+        <h3>Income</h3>
+        <div id="income-section">
+            <div>
+                <input type="text" name="income[]" placeholder="Income description">
+                <input type="number" name="income_amount[]" placeholder="Amount">
+            </div>
+            <button type="button" onclick="addIncomeRow()">Add More Income</button>
+        </div>
+    
+        <h3>Expenses</h3>
+        <div id="expense-section">
+            <div>
+                <input type="text" name="expense[]" placeholder="Expense description">
+                <input type="number" name="expense_amount[]" placeholder="Amount">
+            </div>
+            <button type="button" onclick="addExpenseRow()">Add More Expenses</button>
+        </div>
+    
+        <button type="submit">Submit</button>
+        <h3>Budget Summary</h3>
+
+        <h4>Total Income: {{ total_income }}</h4>
+        <h4>Total Expenses: {{ total_expenses }}</h4>
+
+        <h4>Breakdown:</h4>
+        <ul>
+            <li>Needs: {{ needs_percentage }}%</li>
+            <li>Wants: {{ wants_percentage }}%</li>
+            <li>Luxury: {{ luxury_percentage }}%</li>
+        </ul>
+
+        <h4>Recommendations:</h4>
+        <ul>
+            {% for recommendation in recommendations %}
+                <li>{{ recommendation }}</li>
+            {% endfor %}
+        </ul>
+
+        <a href="#" onclick="window.print()">Print this page</a>
+
+    </form>
+    
+    <script>
+        function addIncomeRow() {
+            const incomeSection = document.getElementById('income-section');
+            const newRow = `<div><input type="text" name="income[]" placeholder="Income description">
+                            <input type="number" name="income_amount[]" placeholder="Amount"></div>`;
+            incomeSection.insertAdjacentHTML('beforeend', newRow);
+        }
+    
+        function addExpenseRow() {
+            const expenseSection = document.getElementById('expense-section');
+            const newRow = `<div><input type="text" name="expense[]" placeholder="Expense description">
+                            <input type="number" name="expense_amount[]" placeholder="Amount"></div>`;
+            expenseSection.insertAdjacentHTML('beforeend', newRow);
+        }
+    </script>
+    
+</body>
+<br><br><br><br><br><br>
+
+    <section id="footer">
+        <div class="footer">
+                <ul><li><a href="" target="_blank" noopener="" class=""> <b>Powered by:</b></a></li> </ul></div>
+        <div class="footer">
+                <ul><li><a href="https://portfolio-duncan-kitune.netlify.app/" target="_blank" noopener="" class=""> <b></b> Dev Code Universe, KE </a></li> </ul></div>        
+        <div class="footer">
+                <ul><li><a href="#" target="_blank" noopener="" class="">&</a></li> </ul></div>
+        <div class="footer">
+                <ul><li><a href="https://consultingafrica.netlify.app/" target="_blank" noopener="" class=""> <b></b> DKC Consulting Africa </a></li> </ul></div>
+        <div class="footer"> 
+                <ul><li>&copy; 2024</li></ul></div>
+        <div class="footer">
+            <ul><li><a href="tel:+254720984457" target="_blank">Tel: +254 720 98 44 57 / 733 98 44 57 </a></li></ul></div>
+    </section>
+<script>
+    // ... your existing JavaScript code ...
+
+    // Function to retrieve data from local storage on page load
+    function loadLocalStorageData() {
+        var income_items = JSON.parse(localStorage.getItem('income_items')) || [];
+        var total_income = localStorage.getItem('total_income') || null;
+        var expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+        var category_percentages = JSON.parse(localStorage.getItem('category_percentages')) || {};
+
+        // Update the form and display the data
+        // ... your code to update the form elements ...
+    }
+
+    // Call the function on page load
+    window.onload = loadLocalStorageData;
+</script>
+</html>

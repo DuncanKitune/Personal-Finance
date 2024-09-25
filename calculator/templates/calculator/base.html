@@ -1,0 +1,29 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Your Website{% endblock %}</title>
+
+    <!-- Link to CSS file -->
+    <link rel="stylesheet" href="{% static 'myapp/css/style.css' %}">
+</head>
+<body>
+    {% block content %}{% endblock %}
+
+    <!-- Link to JavaScript file -->
+    <script src="{% static 'myapp/js/script.js' %}"></script>
+</body>
+</html>
+
+{% load static %}
+
+{% extends 'base.html' %}
+
+{% block title %}Home Page{% endblock %}
+
+{% block content %}
+<h1>Welcome to the Homepage!</h1>
+<p>This is the homepage content.</p>
+{% endblock %}
