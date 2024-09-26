@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Materials Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        h2 {
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        label {
+            margin-top: 10px;
+        }
+        input, select {
+            width: 48%;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .submit-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .submit-button:hover {
+            background-color: #218838;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .results table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .results th, .results td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: right;
+        }
+        .results th {
+            background-color: #f8f8f8;
+        }
+        #footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between; /* This will space the footer items evenly */
+    align-items: center; /* Aligns items vertically in the center */
+    background-color: #38761d; /* Green background */
+    color: white; /* Text color set to white */
+    padding: 10px; /* Adds padding inside the footer */
+    font-size: medium;
+}
+
+
+    .footer{
+        display: flex;
+        flex-wrap: wrap;
+        position: relative;
+        justify-content: space-between;
+        align-items: center;
+        height: 2rem;
+       
+    }
+    .footer li{
+        color: white;
+        font-size: small;
+        text-decoration: none;
+        list-style: none;
+    }
+    .footer ul{
+        padding: 0;
+        margin: 0;
+    }
+    .footer a {
+        font-size: small;
+        color: white;
+        text-decoration: none;
+    } 
+    @media(max-width: 768px){
+        .button-container{
+        max-height: 150px;
+        max-width: 250px;
+        flex-wrap: wrap;
+        overflow: hidden;
+        overflow-y: scroll;
+        padding: auto;
+        margin: auto;
+        }
+    }
+    @media(max-width: 768px){
+        .footer a{
+        gap: auto;
+        flex-wrap: wrap;
+        font-size: 80%;
+        }
+    }
+    @media(max-width: 768px){
+        h1 span{
+        font-size: 50%;
+        }
+    }
+    @media(max-width: 768px){
+        p{
+        font-size: 70%;
+        }
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Building Materials Calculator</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="submit-button">Calculate</button>
+        </form>
+
+        {% if result %}
+        <div class="results">
+            <h3>Results</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Material</th>
+                        <th>Quantity</th>
+                        <th>Cost (KES)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Stones Required</td>
+                        <td>{{ result.material_totals.stones_required|floatformat:0|intcomma }}</td>
+                        <td>{{ result.stone_cost|floatformat:2|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>Cement Bags Required</td>
+                        <td>{{ result.material_totals.cement_required|floatformat:0|intcomma }}</td>
+                        <td>{{ result.cement_cost|floatformat:2|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>Sand Required (units)</td>
+                        <td>{{ result.material_totals.sand_required|floatformat:0|intcomma }}</td>
+                        <td>{{ result.sand_cost|floatformat:2|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <th>Total Cost</th>
+                        <th></th>
+                        <th>{{ result.total_cost|floatformat:2|intcomma }}</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</body>
+<br><br><br><br><br><br>
+
+   <section id="footer">
+        <div class="footer">
+                <ul><li><a href="" target="_blank" noopener="" class=""> <b>Powered by:</b></a></li> </ul></div>
+        <div class="footer">
+                <ul><li><a href="https://portfolio-duncan-kitune.netlify.app/" target="_blank" noopener="" class=""> <b></b> Dev Code Universe, KE </a></li> </ul></div>        
+        <div class="footer">
+                <ul><li><a href="#" target="_blank" noopener="" class="">&</a></li> </ul></div>
+        <div class="footer">
+                <ul><li><a href="https://consultingafrica.netlify.app/" target="_blank" noopener="" class=""> <b></b> DKC Consulting Africa </a></li> </ul></div>
+        <div class="footer"> 
+                <ul><li>&copy; 2024</li></ul></div>
+        <div class="footer">
+            <ul><li><a href="tel:+254720984457" target="_blank">Tel: +254 720 98 44 57 / 733 98 44 57 </a></li></ul></div>
+   </section>
+</html>

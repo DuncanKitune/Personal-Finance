@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compound Interest Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: left;
+            color: #333;
+        }
+        h2{
+        text-align: left;
+        font-size: medium;
+        color: #4CAF50;
+        padding: auto;
+        margin: auto;
+    }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+        }
+        .result p {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .result .highlight {
+            font-weight: bold;
+            color: #28a745;
+        }
+        p{
+        font-size: smaller;
+        font-style: normal;
+        color: gray;
+
+    }
+        #footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between; /* This will space the footer items evenly */
+    align-items: center; /* Aligns items vertically in the center */
+    background-color: #38761d; /* Green background */
+    color: white; /* Text color set to white */
+    padding: 10px; /* Adds padding inside the footer */
+    font-size: medium;
+}
+    .footer{
+        display: flex;
+        flex-wrap: wrap;
+        position: relative;
+        justify-content: space-between;
+        align-items: center;
+        height: 2rem;
+       
+    }
+    .footer li{
+        color: white;
+        font-size: small;
+        text-decoration: none;
+        list-style: none;
+    }
+    .footer ul{
+        padding: 0;
+        margin: 0;
+    }
+    .footer a {
+        font-size: small;
+        color: white;
+        text-decoration: none;
+    } 
+    </style>
+    <script>
+        function formatWithCommas(input) {
+    // Remove existing commas
+    let value = input.value.replace(/,/g, '');
+
+    // Only allow numbers
+    if (!isNaN(value)) {
+        // Add commas back after every three digits
+        input.value = Number(value).toLocaleString();
+    } else {
+        input.value = input.value.substring(0, input.value.length - 1);
+    }
+}
+function formatWithCommas(input) {
+    // Remove existing commas
+    let value = input.value.replace(/,/g, '');
+
+    // Only allow numbers
+    if (!isNaN(value)) {
+        // Add commas back after every three digits
+        input.value = Number(value).toLocaleString();
+    } else {
+        input.value = input.value.substring(0, input.value.length - 1);
+    }
+}
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Compound Interest Calculator</h1>
+        <!-- <br> -->
+        <a  href="{% url 'main_menu' %}" class="Home">Home</a>
+        <p><strong>What is compound interest?</strong> It is a financial concept that allows your money to grow exponentially over time. Unlike simple interest, where interest is calculated only on the principal amount, compound interest is calculated on both the principal and the accumulated interest. This means that your money earns interest on itself, leading to significant growth over the long term.</p><p>The Benefits of Compound Interest;<br>
+
+            Exponential Growth: The longer you let your money compound, the more it will grow.<br>
+            Power of Time: Even small amounts invested consistently over a long period can yield substantial returns.<br>
+            Financial Goals: Compound interest can help you achieve your financial goals, such as saving for retirement, a down payment on a home, or a child's education.
+            <strong>Key Factors to Consider</strong>
+            
+            Interest Rate: A higher interest rate will lead to faster growth.<br>
+            Compounding Frequency: The more frequently interest is compounded (e.g., monthly, quarterly, annually), the faster your money will grow.<br>
+            Time Horizon: The longer you invest, the more time your money has to compound.<br>
+            By understanding the concept of compound interest and taking advantage of its power, you can significantly increase your wealth and achieve your financial objectives.</p>
+
+         <h2>Fill the form below to start estimating</h2> <br>
+
+        <form method="POST">
+            {% csrf_token %}
+            <label for="principal">Principal Amount:</label>
+            <input type="number" id="principal" name="principal" required step="0.01" placeholder="Enter principal amount" value="{{ principal|default:'' }}">
+
+            <label for="rate">Annual Interest Rate (%):</label>
+            <input type="number" id="rate" name="rate" required step="0.01" placeholder="Enter interest rate" value="{{ rate|default:'' }}">
+
+            <label for="times_compounded">Times Interest is Paid per Year:</label>
+            <input type="number" id="times_compounded" name="times_compounded" required min="1" placeholder="Enter times compounded" value="{{ times_compounded|default:'' }}">
+
+            <label for="years">Number of Years:</label>
+            <input type="number" id="years" name="years" required min="1" placeholder="Enter number of years" value="{{ years|default:'' }}">
+
+            <button type="submit">Calculate</button>
+        </form>
+
+        {% if amount %}
+        <div class="result">
+            <h2>Result</h2>
+            <p>Principal Amount: {{ principal }}</p>
+            <p>Annual Interest Rate: {{ rate }}%</p>
+            <p>Times Interest is Paid per Year: {{ times_compounded }}</p>
+            <p>Number of Years: {{ years }}</p>
+            <hr>
+            <p class="highlight">Total Amount: {{ amount }}</p>
+            <p class="highlight">Interest Earned: {{ interest }}</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+<br><br><br><br><br><br>
+
+   <section id="footer">
+        <div class="footer">
+                <ul><li><a href="" target="_blank" noopener="" class=""> <b>Powered by:</b></a></li> </ul></div>
+        <div class="footer">
+                <ul><li><a href="https://portfolio-duncan-kitune.netlify.app/" target="_blank" noopener="" class=""> <b></b> Dev Code Universe, KE </a></li> </ul></div>        
+        <div class="footer">
+                <ul><li><a href="#" target="_blank" noopener="" class="">&</a></li> </ul></div>
+        <div class="footer">
+                <ul><li><a href="https://consultingafrica.netlify.app/" target="_blank" noopener="" class=""> <b></b> DKC Consulting Africa </a></li> </ul></div>
+        <div class="footer"> 
+                <ul><li>&copy; 2024</li></ul></div>
+        <div class="footer">
+            <ul><li><a href="tel:+254720984457" target="_blank">Tel: +254 720 98 44 57 / 733 98 44 57 </a></li></ul></div>
+   </section>
+</html>

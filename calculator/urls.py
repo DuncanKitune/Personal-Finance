@@ -10,4 +10,6 @@ urlpatterns = [
     path('calculate-budget/', views.personal_budget, name='personal_budget'),
     path('calculate-business-risk/', views.risk_calculations, name='risk_calculations'),
     path('pdf/', views.generate_pdf, name='generate_pdf'),
+    path('compound-interest', views.compound_interest, name='compound_interest'),
+    path('calculate-material', views.calculate_materials, name='calculate_materials'),
 ]

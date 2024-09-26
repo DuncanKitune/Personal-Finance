@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Finance Manager</title>
+</head>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 40px;
+        background-color: #f4f4f9;
+        color: #333;
+    }
+    form {
+        margin: 20px 0;
+    }
+    input, button {
+        padding: 10px;
+        margin: 5px;
+    }
+    .result {
+        margin-top: 20px;
+        padding: 20px;
+        background-color: #e2f4d3;
+        border: 1px solid #b2d8a3;
+        color: #38761d;
+        font-size: 24px;
+    }
+    p{
+        font-size: smaller;
+        font-style: normal;
+        color: gray;
+
+    }
+
+    #footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between; /* This will space the footer items evenly */
+    align-items: center; /* Aligns items vertically in the center */
+    background-color: #38761d; /* Green background */
+    color: white; /* Text color set to white */
+    padding: 10px; /* Adds padding inside the footer */
+    font-size: medium;
+}
+
+
+    .footer{
+        display: flex;
+        flex-wrap: wrap;
+        position: relative;
+        justify-content: space-between;
+        align-items: center;
+        height: 2rem;
+       
+    }
+    .footer li{
+        color: white;
+        font-size: small;
+        text-decoration: none;
+        list-style: none;
+    }
+    .footer ul{
+        padding: 0;
+        margin: 0;
+    }
+    .footer a {
+        font-size: small;
+        color: white;
+        text-decoration: none;
+    } 
+    @media(max-width: 768px){
+        .button-container{
+        max-height: 150px;
+        max-width: 250px;
+        flex-wrap: wrap;
+        overflow: hidden;
+        overflow-y: scroll;
+        padding: auto;
+        margin: auto;
+        }
+    }
+    @media(max-width: 768px){
+        .footer a{
+        gap: auto;
+        flex-wrap: wrap;
+        font-size: 80%;
+        }
+    }
+    @media(max-width: 768px){
+        h1 span{
+        font-size: 50%;
+        }
+    }
+    @media(max-width: 768px){
+        p{
+        font-size: 70%;
+        }
+    }
+</style>
+<script>
+    function formatWithCommas(input) {
+    // Remove existing commas
+    let value = input.value.replace(/,/g, '');
+
+    // Only allow numbers
+    if (!isNaN(value)) {
+        // Add commas back after every three digits
+        input.value = Number(value).toLocaleString();
+    } else {
+        input.value = input.value.substring(0, input.value.length - 1);
+    }
+}
+</script>
+</head>
+<body>
+    <h1>Future Value of Investments</h1>
+    <br>
+    
+    <a href="{% url 'main_menu' %}" class="Home">Home</a>
+        <p>If you have a constant amount you want to save over a certain period of time eg 10 years and you want to save in regular intervals eg monthly(12), quarterly(4), half yearly(2) or once per year(1), then you can estimate what will be the value of your investment in the future at the end of your set period. 
+            <p><strong>Key differences between annuities and compund interest </strong> No. 1 is the frequency of PRINCIPAL deposit. Compound interest is based on a single one off deposit while annuities involve regular deposits. </p>
+            <br>NB: 
+            <br><p>Assume you will not withdraw any amount including interest from the investment during the investment period. 
+            <p>Use the interest rate given by your investment partner eg a Bank / SACCO or assume the Central Bank's base lending rate of 12.75%.</p>
+    <form method="POST" action="">
+        {% csrf_token %}
+        <input type="number" name="principal" placeholder="Instalments Amount (KES)" required><br>
+        <input type="number" step="0.01" name="annual_rate" placeholder="Annual Interest Rate (%)" required><br>
+        <input type="number" name="years" placeholder="Number of Years" required><br>
+        <input type="number" name="compounds_per_year" placeholder="Intervals Per Year" required><br>
+        <button type="submit">Calculate</button>
+    </form>
+
+{% if future_value %}
+    <div class="result">
+        Value of Your Savings: {{ future_value|floatformat:2 }} KES
+    </div>
+{% endif %}
+</body>
+<br><br><br><br><br><br>
+
+   <section id="footer">
+        <div class="footer">
+                <ul><li><a href="" target="_blank" noopener="" class=""> <b>Powered by:</b></a></li> </ul></div>
+        <div class="footer">
+                <ul><li><a href="https://portfolio-duncan-kitune.netlify.app/" target="_blank" noopener="" class=""> <b></b> Dev Code Universe, KE </a></li> </ul></div>        
+        <div class="footer">
+                <ul><li><a href="#" target="_blank" noopener="" class="">&</a></li> </ul></div>
+        <div class="footer">
+                <ul><li><a href="https://consultingafrica.netlify.app/" target="_blank" noopener="" class=""> <b></b> DKC Consulting Africa </a></li> </ul></div>
+        <div class="footer"> 
+                <ul><li>&copy; 2024</li></ul></div>
+        <div class="footer">
+            <ul><li><a href="tel:+254720984457" target="_blank">Tel: +254 720 98 44 57 / 733 98 44 57 </a></li></ul></div>
+   </section>
+</html>
+<!-- <body>
+    <h1>Investment Calculator</h1>
+    <form method="POST" action="{% url 'calculate_future_value' %}">
+        {% csrf_token %}
+        <label for="principal">Principal Amount (KES): </label>
+        <input type="number" label="" name="principal" required><br><br>
+
+        <label for="annual_rate">Annual Interest Rate (%): </label>
+        <input type="number" aria-label="" step="0.01" name="annual_rate" required><br><br>
+
+        <label for="years">Number of Years: </label>
+        <input type="number" label="" name="years" required><br><br>
+
+        <label for="compounds_per_year">Compounds Per Year: </label>
+        <input type="number" label="" name="compounds_per_year" required><br><br>
+
+        <button type="submit">Calculate</button>
+    </form>
+
+    {% if future_value %}
+    <h2>Future Value: {{ future_value }} KES</h2>
+    {% endif %}
+</body> -->
+<!-- </html> -->

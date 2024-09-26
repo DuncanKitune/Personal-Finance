@@ -113,7 +113,7 @@
             {% for income, amount in incomes %}
             <div class="input-group">
                 <input type="text" name="income[]" placeholder="Income description" value="{{ income }}">
-                <input type="number" name="income_amount[]" placeholder="Amount" value="{{ amount }}">
+                <input type="number" name="income_amount[]" id="amount" oninput="formatWithCommas(this)" placeholder="Amount" value="{{ amount }}">
             </div>
             {% endfor %}
         </div>
@@ -124,7 +124,7 @@
             {% for expense, amount in expenses %}
             <div class="input-group">
                 <input type="text" name="expense[]" placeholder="Expense description" value="{{ expense }}">
-                <input type="number" name="expense_amount[]" placeholder="Amount" value="{{ amount }}">
+                <input type="number" name="expense_amount[]" id="amount" oninput="formatWithCommas(this)" placeholder="Amount" value="{{ amount }}">
             </div>
             {% endfor %}
         </div>
@@ -145,23 +145,23 @@
                 </tr>
                 <tr>
                     <td>Needs</td>
-                    <td>{{ percentages.Needs }}%</td>
+                    <td>{{ percentages.Needs|floatformat:2 }}%</td>
                 </tr>
                 <tr>
                     <td>Wants</td>
-                    <td>{{ percentages.Wants }}%</td>
+                    <td>{{ percentages.Wants|floatformat:2 }}%</td>
                 </tr>
                 <tr>
                     <td>Luxury</td>
-                    <td>{{ percentages.Luxury }}%</td>
+                    <td>{{ percentages.Luxury|floatformat:2 }}%</td>
                 </tr>
                 <tr>
                     <td>Savings & Investment</td>
-                    <td>{{ percentages.Savings_Investment }}%</td>
+                    <td>{{ percentages.Savings_Investment|floatformat:2 }}%</td>
                 </tr>
                 <tr>
                     <td>Other</td>
-                    <td>{{ percentages.Other }}%</td>
+                    <td>{{ percentages.Other|floatformat:2 }}%</td>
                 </tr>
             </table>
 
@@ -202,6 +202,18 @@
                 </div>`;
             expenseSection.insertAdjacentHTML('beforeend', newRow);
         }
+        function formatWithCommas(input) {
+    // Remove existing commas
+    let value = input.value.replace(/,/g, '');
+
+    // Only allow numbers
+    if (!isNaN(value)) {
+        // Add commas back after every three digits
+        input.value = Number(value).toLocaleString();
+    } else {
+        input.value = input.value.substring(0, input.value.length - 1);
+    }
+}
     </script>
 </body>
 </html>

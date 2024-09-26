@@ -126,6 +126,7 @@
         }        
         #footer {
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between; /* This will space the footer items evenly */
             align-items: center; /* Aligns items vertically in the center */
             background-color: #38761d; /* Green background */
@@ -271,7 +272,7 @@
                 {% for name, value in zipped_assets %}
                 <tr>
                     <td><input type="text" name="asset_name" value="{{ name }}"></td>
-                    <td><input type="number" pattern="\d+(,\d{3})*(\.\d+)?" oninput="formatNumber(this)" step="0.01" name="asset_value" value="{{ value }}"></td>
+                    <td><input type="number" pattern="\d+(,\d{3})*(\.\d+)?" id="amount" oninput="formatWithCommas(this)" step="0.01" name="asset_value" value="{{ value }}"></td>
                 </tr>
                 {% endfor %}
             </table>
@@ -288,7 +289,7 @@
                 {% for name, value in zipped_liabilities %}
                 <tr>
                     <td><input type="text" name="liability_name" value="{{ name }}"></td>
-                    <td><input type="number" pattern="\d+(,\d{3})*(\.\d+)?" oninput="formatNumber(this)" step="0.01" name="liability_value" value="{{ value }}"></td>
+                    <td><input type="number" pattern="\d+(,\d{3})*(\.\d+)?" id="amount" oninput="formatWithCommas(this)" step="0.01" name="liability_value" value="{{ value }}"></td>
                 </tr>
                 {% endfor %}
             </table>
@@ -394,5 +395,17 @@
             // Call displayDate() to update the date immediately
             displayDate();
         });
+        function formatWithCommas(input) {
+    // Remove existing commas
+    let value = input.value.replace(/,/g, '');
+
+    // Only allow numbers
+    if (!isNaN(value)) {
+        // Add commas back after every three digits
+        input.value = Number(value).toLocaleString();
+    } else {
+        input.value = input.value.substring(0, input.value.length - 1);
+    }
+}
     </script>
 </html>

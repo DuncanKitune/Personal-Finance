@@ -89,6 +89,7 @@
         }
         #footer {
         display: flex;
+       
         justify-content: space-between; /* This will space the footer items evenly */
         align-items: center; /* Aligns items vertically in the center */
         background-color: #38761d; /* Green background */
@@ -122,6 +123,34 @@
         .hidden {
             display: none;
         }
+        @media(max-width: 768px){
+        .button-container{
+        max-height: 150px;
+        max-width: 250px;
+        flex-wrap: wrap;
+        overflow: hidden;
+        overflow-y: scroll;
+        padding: auto;
+        margin: auto;
+        }
+    }
+    @media(max-width: 768px){
+        .footer a{
+        gap: auto;
+        flex-wrap: wrap;
+        font-size: 80%;
+        }
+    }
+    @media(max-width: 768px){
+        h1 span{
+        font-size: 50%;
+        }
+    }
+    @media(max-width: 768px){
+        p{
+        font-size: 70%;
+        }
+    }
     </style>
 </head>
 <body>
@@ -155,19 +184,19 @@
         <!-- Additional optional inputs (hidden initially) -->
         <div id="additionalInputs" class="hidden">
             <div id="VaRInputs" class="hidden">
-                <label for="probability_loss">Probability of Loss (optional):</label><br>
+                <label for="probability_loss">Probability of Loss eg 95%:</label><br>
                 <input type="number" step="any" name="probability_loss" id="probability_loss"><br><br>
-                <label for="loss_amount">Loss Amount (optional):</label><br>
+                <label for="loss_amount">Loss Amount:</label><br>
                 <input type="number" step="any" name="loss_amount" id="loss_amount"><br><br>
             </div>
             <div id="SharpeRatioInputs" class="hidden">
-                <label for="risk_free_rate">Risk-free Rate (optional):</label><br>
+                <label for="risk_free_rate">Risk-free Rate:</label><br>
                 <input type="number" step="any" name="risk_free_rate" id="risk_free_rate"><br><br>
-                <label for="market_return">Market Return (optional):</label><br>
+                <label for="market_return">Market Return:</label><br>
                 <input type="number" step="any" name="market_return" id="market_return"><br><br>
             </div>
             <div id="DCFInputs" class="hidden">
-                <label for="discount_rate">Discount Rate (optional):</label><br>
+                <label for="discount_rate">Discount Rate:</label><br>
                 <input type="number" step="any" name="discount_rate" id="discount_rate"><br><br>
             </div>
             <!-- Add more input sections as needed -->
@@ -210,6 +239,18 @@
             }
             // Add more conditions for other formulas as necessary
         });
+        function formatWithCommas(input) {
+    // Remove existing commas
+    let value = input.value.replace(/,/g, '');
+
+    // Only allow numbers
+    if (!isNaN(value)) {
+        // Add commas back after every three digits
+        input.value = Number(value).toLocaleString();
+    } else {
+        input.value = input.value.substring(0, input.value.length - 1);
+    }
+}
     </script>
     <br><br><br><br><br><br><br>
     <section id="footer">

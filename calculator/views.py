@@ -15,13 +15,41 @@ import math
 from io import BytesIO
 from django.core.files.storage import FileSystemStorage
 from weasyprint import HTML # Import necessary libraries for PDF generation
+from django import forms
 # from weasyprint import WeasyTemplateResponseMixin, WeasyTemplateResponse
 
 # def calculate_future_value(request):
 #     return HttpResponse("The view is working!")
+def compound_interest(request):
+    if request.method == 'POST':
+        # Get form values
+        principal = float(request.POST.get('principal', 0))
+        rate = float(request.POST.get('rate', 0)) / 100  # Convert percentage to decimal
+        times_compounded = int(request.POST.get('times_compounded', 1))
+        years = int(request.POST.get('years', 1))
+        
+        # Compound interest formula
+        amount = principal * math.pow((1 + rate / times_compounded), times_compounded * years)
+        interest = amount - principal  # Total interest earned
+        
+        # Round to two decimal places
+        amount = round(amount, 2)
+        interest = round(interest, 2)
+        
+        # Render both the form and result in the same template
+        return render(request, 'calculator/compound_interest.html', {
+            'principal': principal,
+            'rate': rate * 100,  # Convert back to percentage
+            'times_compounded': times_compounded,
+            'years': years,
+            'amount': amount,
+            'interest': interest
+        })
+
+    return render(request, 'calculator/compound_interest.html')
 
 def main_menu(request):
-    return render(request, 'calculator/main_menu.html')
+    return render(request, 'calculator/index.html')
 
 def calculate_future_value(request):
     if request.method == 'POST':
@@ -46,10 +74,10 @@ def calculate_future_value(request):
             })
         else:
             # Otherwise return HTML
-            return render(request, 'calculator/index.html', {'future_value': future_value})
+            return render(request, 'calculator/future_annuity.html', {'future_value': future_value})
 
     # Show the form initially
-    return render(request, 'calculator/index.html')
+    return render(request, 'calculator/future_annuity.html')
 
 def calculate_principle(request):
     if request.method == 'POST':
@@ -298,7 +326,7 @@ def personal_budget(request):
             'surplus_or_deficit': surplus_or_deficit_label
         })
 
-    return render(request, 'calculator/personal_budget.html')
+    return render(request, 'calculator/budget_summary.html')
 
 
 # Views.py logic for risk calculations
@@ -371,6 +399,98 @@ def generate_pdf(request):
     response = HttpResponse(pdf_file.getvalue(), content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="risk_results.pdf"'
     return response
+
+# Define the form
+class MaterialCalculatorForm(forms.Form):
+    width = forms.FloatField(label="Width of the House (ft)", required=True)
+    length = forms.FloatField(label="Length of the House (ft)", required=True)
+    height = forms.FloatField(label="Height of the House (ft)", required=True)
+    doors = forms.IntegerField(label="Number of Doors", required=True)
+    door_width = forms.FloatField(label="Width of Doors (ft)", required=True)
+    door_height = forms.FloatField(label="Height of Doors (ft)", required=True)
+    windows = forms.IntegerField(label="Number of Windows", required=True)
+    window_width = forms.FloatField(label="Width of Windows (ft)", required=True)
+    window_height = forms.FloatField(label="Height of Windows (ft)", required=True)
+    cost_per_stone = forms.FloatField(label="Cost per Stone", required=False)
+    cost_per_cement_bag = forms.FloatField(label="Cost per Cement Bag", required=False)
+    cost_per_sand_unit = forms.FloatField(label="Cost per Sand Unit", required=False)
+    cost_per_mason = forms.FloatField(label="Cost per Mason (per day)", required=False)
+    cost_per_laborer = forms.FloatField(label="Cost per Laborer (per day)", required=False)
+    formula_type = forms.ChoiceField(choices=[('stone_walling', 'Stone Walling')], label="Formula Type", required=True)
+
+# Calculation function
+def calculate_materials(width, length, height, doors, door_width, door_height, windows, window_width, window_height):
+    # Perimeter and area of walls
+    perimeter = 2 * (width + length)
+    total_wall_area = perimeter * height
+    door_area = doors * door_width * door_height
+    window_area = windows * window_width * window_height
+    net_wall_area = total_wall_area - (door_area + window_area)
+    
+    # Stone walling calculations
+    stone_volume = net_wall_area * 0.67  # Assuming 200mm (0.67 ft) wall thickness
+    stone_per_cubic_ft = 0.562  # Approx volume of one stone in cubic feet
+    stones_required = stone_volume / stone_per_cubic_ft
+    
+    # Mortar (cement and sand) calculation
+    mortar_volume = stone_volume * 0.3  # 30% of stone volume
+    cement_required = mortar_volume / 4  # 1 part cement, 3 parts sand
+    sand_required = mortar_volume * 0.75  # 3 parts sand
+    
+    return {
+        'net_wall_area': net_wall_area,
+        'stones_required': stones_required,
+        'cement_required': cement_required,
+        'sand_required': sand_required
+    }
+
+# View handling the calculation
+def MaterialCalculatorView(request):
+    result = None  # Initialize the result variable
+    
+    if request.method == 'POST':
+        form = MaterialCalculatorForm(request.POST)  # Create form with POST data
+        if form.is_valid():  # Only proceed if the form is valid
+            # Retrieve all form data
+            width = form.cleaned_data['width']
+            length = form.cleaned_data['length']
+            height = form.cleaned_data['height']
+            doors = form.cleaned_data['doors']
+            door_width = form.cleaned_data['door_width']
+            door_height = form.cleaned_data['door_height']
+            windows = form.cleaned_data['windows']
+            window_width = form.cleaned_data['window_width']
+            window_height = form.cleaned_data['window_height']
+            
+            # Costs (optional fields)
+            cost_per_stone = form.cleaned_data['cost_per_stone']
+            cost_per_cement_bag = form.cleaned_data['cost_per_cement_bag']
+            cost_per_sand_unit = form.cleaned_data['cost_per_sand_unit']
+            cost_per_mason = form.cleaned_data['cost_per_mason']
+            cost_per_laborer = form.cleaned_data['cost_per_laborer']
+            
+            # Call the calculation function
+            material_totals = calculate_materials(
+                width, length, height, doors, door_width, door_height, windows, window_width, window_height
+            )
+            
+            # Calculate total cost if costs were provided
+            stone_cost = material_totals['stones_required'] * cost_per_stone if cost_per_stone else 0
+            cement_cost = material_totals['cement_required'] * cost_per_cement_bag if cost_per_cement_bag else 0
+            sand_cost = material_totals['sand_required'] * cost_per_sand_unit if cost_per_sand_unit else 0
+            
+            # Store the result to be displayed in the template
+            result = {
+                'stone_cost': stone_cost,
+                'cement_cost': cement_cost,
+                'sand_cost': sand_cost,
+                'total_cost': stone_cost + cement_cost + sand_cost,
+                'material_totals': material_totals
+            }
+    else:
+        form = MaterialCalculatorForm()  # If not POST, show an empty form
+
+    return render(request, 'material_calculator.html', {'form': form, 'result': result})
 
 
 # def net_worth_calculator(request):
