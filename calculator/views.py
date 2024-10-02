@@ -16,6 +16,7 @@ from io import BytesIO
 from django.core.files.storage import FileSystemStorage
 from weasyprint import HTML # Import necessary libraries for PDF generation
 from django import forms
+from decimal import Decimal
 # from weasyprint import WeasyTemplateResponseMixin, WeasyTemplateResponse
 
 # def calculate_future_value(request):
@@ -400,6 +401,9 @@ def generate_pdf(request):
     response['Content-Disposition'] = 'attachment; filename="risk_results.pdf"'
     return response
 
+from django.shortcuts import render
+from django import forms
+
 # Define the form
 class MaterialCalculatorForm(forms.Form):
     width = forms.FloatField(label="Width of the House (ft)", required=True)
@@ -418,7 +422,7 @@ class MaterialCalculatorForm(forms.Form):
     cost_per_laborer = forms.FloatField(label="Cost per Laborer (per day)", required=False)
     formula_type = forms.ChoiceField(choices=[('stone_walling', 'Stone Walling')], label="Formula Type", required=True)
 
-# Calculation function
+# Calculation function for materials
 def calculate_materials(width, length, height, doors, door_width, door_height, windows, window_width, window_height):
     # Perimeter and area of walls
     perimeter = 2 * (width + length)
@@ -444,53 +448,172 @@ def calculate_materials(width, length, height, doors, door_width, door_height, w
         'sand_required': sand_required
     }
 
-# View handling the calculation
+# View for handling the form and calculations
 def MaterialCalculatorView(request):
-    result = None  # Initialize the result variable
+    form = MaterialCalculatorForm(request.POST or None)
+    result = None
     
-    if request.method == 'POST':
-        form = MaterialCalculatorForm(request.POST)  # Create form with POST data
-        if form.is_valid():  # Only proceed if the form is valid
-            # Retrieve all form data
-            width = form.cleaned_data['width']
-            length = form.cleaned_data['length']
-            height = form.cleaned_data['height']
-            doors = form.cleaned_data['doors']
-            door_width = form.cleaned_data['door_width']
-            door_height = form.cleaned_data['door_height']
-            windows = form.cleaned_data['windows']
-            window_width = form.cleaned_data['window_width']
-            window_height = form.cleaned_data['window_height']
-            
-            # Costs (optional fields)
-            cost_per_stone = form.cleaned_data['cost_per_stone']
-            cost_per_cement_bag = form.cleaned_data['cost_per_cement_bag']
-            cost_per_sand_unit = form.cleaned_data['cost_per_sand_unit']
-            cost_per_mason = form.cleaned_data['cost_per_mason']
-            cost_per_laborer = form.cleaned_data['cost_per_laborer']
-            
-            # Call the calculation function
-            material_totals = calculate_materials(
-                width, length, height, doors, door_width, door_height, windows, window_width, window_height
-            )
-            
-            # Calculate total cost if costs were provided
-            stone_cost = material_totals['stones_required'] * cost_per_stone if cost_per_stone else 0
-            cement_cost = material_totals['cement_required'] * cost_per_cement_bag if cost_per_cement_bag else 0
-            sand_cost = material_totals['sand_required'] * cost_per_sand_unit if cost_per_sand_unit else 0
-            
-            # Store the result to be displayed in the template
-            result = {
-                'stone_cost': stone_cost,
-                'cement_cost': cement_cost,
-                'sand_cost': sand_cost,
-                'total_cost': stone_cost + cement_cost + sand_cost,
-                'material_totals': material_totals
-            }
-    else:
-        form = MaterialCalculatorForm()  # If not POST, show an empty form
+    # Handle form submission and validation
+    if request.method == 'POST' and form.is_valid():
+        # Extract form data
+        width = form.cleaned_data['width']
+        length = form.cleaned_data['length']
+        height = form.cleaned_data['height']
+        doors = form.cleaned_data['doors']
+        door_width = form.cleaned_data['door_width']
+        door_height = form.cleaned_data['door_height']
+        windows = form.cleaned_data['windows']
+        window_width = form.cleaned_data['window_width']
+        window_height = form.cleaned_data['window_height']
+        
+        # Optional cost inputs
+        cost_per_stone = form.cleaned_data.get('cost_per_stone', 0)
+        cost_per_cement_bag = form.cleaned_data.get('cost_per_cement_bag', 0)
+        cost_per_sand_unit = form.cleaned_data.get('cost_per_sand_unit', 0)
+        cost_per_mason = form.cleaned_data.get('cost_per_mason', 0)
+        cost_per_laborer = form.cleaned_data.get('cost_per_laborer', 0)
+        
+        # Perform calculations
+        material_totals = calculate_materials(
+            width, length, height, doors, door_width, door_height, windows, window_width, window_height
+        )
+        
+        # Calculate costs if cost data is provided
+        stone_cost = material_totals['stones_required'] * cost_per_stone if cost_per_stone else 0
+        cement_cost = material_totals['cement_required'] * cost_per_cement_bag if cost_per_cement_bag else 0
+        sand_cost = material_totals['sand_required'] * cost_per_sand_unit if cost_per_sand_unit else 0
+        
+        # Store the results in a dictionary to display in the template
+        result = {
+            'stone_cost': stone_cost,
+            'cement_cost': cement_cost,
+            'sand_cost': sand_cost,
+            'total_cost': stone_cost + cement_cost + sand_cost,
+            'material_totals': material_totals
+        }
+    
+    return render(request, 'calculator/material_calculator.html', {'form': form, 'result': result})
 
-    return render(request, 'material_calculator.html', {'form': form, 'result': result})
+
+
+
+# Define a formset for operating costs with default values
+class OperatingCostForm(forms.Form):
+    cost_name = forms.CharField(label="Cost Name", max_length=100)
+    cost_value = forms.DecimalField(label="Cost Amount", max_digits=15, decimal_places=2)
+
+    def __init__(self, *args, **kwargs):
+        super(OperatingCostForm, self).__init__(*args, **kwargs)
+        # Default operating costs
+        self.fields['cost_name'].initial = 'Operating Cost Name'
+        self.fields['cost_value'].initial = 0.00
+
+
+# Define the main form for each investment option
+class FeasibilityForm(forms.Form):
+    investment_name = forms.CharField(label="Investment Name", max_length=100)
+    purchase_cost = forms.DecimalField(label="Purchase Cost", max_digits=15, decimal_places=2)
+    direct_income = forms.DecimalField(label="Direct Income", max_digits=15, decimal_places=2)
+    indirect_income = forms.DecimalField(label="Indirect Income (Savings)", max_digits=15, decimal_places=2)
+    years = forms.IntegerField(label="Investment Period (Years)")
+    discount_rate = forms.DecimalField(label="Discount Rate (%)", max_digits=5, decimal_places=2)
+
+    FORMULA_CHOICES = [
+        ('npv', 'Net Present Value (NPV)'),
+        ('eac', 'Equivalent Annual Cost (EAC)')
+    ]
+    formula = forms.ChoiceField(choices=FORMULA_CHOICES, label="Choose Formula", widget=forms.RadioSelect)
+
+    def __init__(self, *args, **kwargs):
+        super(FeasibilityForm, self).__init__(*args, **kwargs)
+        # Set formula options to appear where needed
+        self.fields['formula'].initial = 'npv'
+
+
+# Function to calculate NPV
+def calculate_npv(purchase_cost, cash_flows, discount_rate, years):
+    npv = -purchase_cost
+    for t in range(1, years + 1):
+        npv += cash_flows / ((1 + discount_rate / 100) ** t)
+    return npv
+
+
+# Function to calculate EAC
+def calculate_eac(npv, discount_rate, years):
+    eac = npv / ((1 - (1 + discount_rate / 100) ** -years) / (discount_rate / 100))
+    return eac
+
+
+def feasibility_study(request):
+    # Create a formset for multiple operating costs
+    OperatingCostFormSet = forms.formset_factory(OperatingCostForm, extra=0)  # No additional forms needed
+    InvestmentFormSet = forms.formset_factory(FeasibilityForm, extra=1)
+
+    if request.method == 'POST':
+        investment_formset = InvestmentFormSet(request.POST, prefix='investments')
+        cost_formset = OperatingCostFormSet(request.POST, prefix='costs')
+
+        if investment_formset.is_valid() and cost_formset.is_valid():
+            results = []
+            recommendations = []
+            for form in investment_formset:
+                investment_name = form.cleaned_data['investment_name']
+                purchase_cost = form.cleaned_data['purchase_cost']
+                direct_income = form.cleaned_data['direct_income']
+                indirect_income = form.cleaned_data['indirect_income']
+                years = form.cleaned_data['years']
+                discount_rate = form.cleaned_data['discount_rate']
+                formula = form.cleaned_data['formula']
+
+                # Predefined operating costs
+                total_operating_cost = sum([cost_form.cleaned_data['cost_value'] for cost_form in cost_formset])
+
+                # Calculate net cash flow
+                net_cash_flow = (direct_income + indirect_income) - total_operating_cost
+                npv_buy = calculate_npv(purchase_cost, net_cash_flow, discount_rate, years)
+
+                if formula == 'eac':
+                    eac_buy = calculate_eac(npv_buy, discount_rate, years)
+                    results.append({
+                        'investment_name': investment_name,
+                        'eac_buy': eac_buy,
+                        'formula': 'EAC'
+                    })
+                else:
+                    results.append({
+                        'investment_name': investment_name,
+                        'npv_buy': npv_buy,
+                        'formula': 'NPV'
+                    })
+
+                # Add recommendations based on NPV or EAC result
+                if npv_buy > 0:
+                    recommendations.append(f"{investment_name} is a profitable investment based on NPV.")
+                else:
+                    recommendations.append(f"{investment_name} is not a profitable investment based on NPV.")
+                
+                if formula == 'eac' and eac_buy < 0:
+                    recommendations.append(f"Consider alternative financing options for {investment_name} as the EAC is negative.")
+
+            return render(request, 'calculator/feasibility_result.html', {
+                'results': results,
+                'recommendations': recommendations
+            })
+
+    else:
+        investment_formset = InvestmentFormSet(prefix='investments')
+        cost_formset = OperatingCostFormSet(prefix='costs', initial=[
+            {'cost_name': 'Wear and Tear', 'cost_value': 1000.00},
+            {'cost_name': 'Spare Parts', 'cost_value': 500.00},
+            {'cost_name': 'Fuel/Electricity', 'cost_value': 2000.00},
+            {'cost_name': 'Manpower Costs', 'cost_value': 3000.00},
+            {'cost_name': 'Depreciation', 'cost_value': 1500.00}
+        ])
+
+    return render(request, 'calculator/feasibility_input.html', {
+        'investment_formset': investment_formset,
+        'cost_formset': cost_formset
+    })
 
 
 # def net_worth_calculator(request):

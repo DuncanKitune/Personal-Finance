@@ -12,4 +12,5 @@ urlpatterns = [
     path('pdf/', views.generate_pdf, name='generate_pdf'),
     path('compound-interest', views.compound_interest, name='compound_interest'),
     path('calculate-material', views.calculate_materials, name='calculate_materials'),
+    path('calculate-feasilility', views.feasibility_study,name='feasibility_study'),
 ]
