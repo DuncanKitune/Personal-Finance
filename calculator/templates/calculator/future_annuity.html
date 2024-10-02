@@ -13,6 +13,24 @@
         background-color: #f4f4f9;
         color: #333;
     }
+    .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+    .a{
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        .a:hover{
+            color: #38761d;
+            text-decoration: wavy;
+            cursor: pointer;
+
+        }
     form {
         margin: 20px 0;
     }
@@ -116,10 +134,11 @@
 </script>
 </head>
 <body>
-    <h1>Annuity Interest & Future Value</h1>
+    <a href="{% url 'main_menu' %}" class="a">Home</a><br>
+    <h1>Annuity Interest Calculator</h1>
     <br>
-    
-    <a href="{% url 'main_menu' %}" class="Home">Home</a>
+    <div class="container">
+   
         <p>If you have a constant amount you want to save over a certain period of time eg 10 years and you want to save in regular intervals eg monthly(12), quarterly(4), half yearly(2) or once per year(1), then you can estimate what will be the value of your investment in the future at the end of your set period. 
             <p><strong>Key differences between annuities and compund interest: </strong> No. 1 is the frequency of PRINCIPAL deposit. Compound interest is based on a single one off deposit while annuities involve regular deposits till the end. </p>
             <p>A good example of annuities is saving in a pension scheme like the Kenya's NSSF where an employee saves 6% of their income or an amount between KES 360 - 1,080 per month from their salary, with the employer contributing for them a similar amount.</p>
@@ -140,6 +159,9 @@
         Value of Your Savings: {{ future_value|floatformat:2 }} KES
     </div>
 {% endif %}
+</p>
+        </p>
+    </div>
 </body>
 <br><br><br><br><br><br>
 

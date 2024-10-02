@@ -42,6 +42,16 @@
             color: blueviolet;
             font-weight: bold;
         }
+        .a{
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        .a:hover{
+            color: #38761d;
+            text-decoration: wavy;
+            cursor: pointer;
+
+        }
         table {
             width: 50%;
             border-collapse: collapse;
@@ -154,9 +164,9 @@
     </style>
 </head>
 <body>
+    <a  href="{% url 'main_menu' %}" class="a">Home</a><br><br>
     <h1>Business and Investment Risk Calculations</h1>
-    <br>
-    <a href="{% url 'main_menu' %}" class="Home">Home</a>
+    <div class="container">
     <p><strong>What is Business Risk</strong> Business risk is the uncertainty or potential for loss that a company faces in its operations. It's basically the risk that something unexpected or unfavorable might happen, which could negatively impact the company's profits or even its survival.This could include things like economic downturns, changes in customer preferences, competition from other businesses, or natural disasters.</p>
 
     <form method="POST" id="riskForm">
@@ -220,7 +230,25 @@
     <br><br>
     <a href="{% url 'generate_pdf' %}">Download Results as PDF</a>
     {% endif %}
+    </div>
+</body>
 
+    
+    <br><br><br><br><br><br><br>
+    <section id="footer">
+        <div class="footer">
+                <ul><li><a href="" target="_blank" noopener="" class=""> <b>Powered by:</b></a></li> </ul></div>
+        <div class="footer">
+                <ul><li><a href="https://portfolio-duncan-kitune.netlify.app/" target="_blank" noopener="" class=""> <b></b> Dev Code Universe, KE </a></li> </ul></div>        
+        <div class="footer">
+                <ul><li><a href="#" target="_blank" noopener="" class="">&</a></li> </ul></div>
+        <div class="footer">
+                <ul><li><a href="https://consultingafrica.netlify.app/" target="_blank" noopener="" class=""> <b></b> DKC Consulting Africa </a></li> </ul></div>
+        <div class="footer"> 
+                <ul><li>&copy; 2024</li></ul></div>
+        <div class="footer">
+            <ul><li><a href="tel:+254720984457" target="_blank">Tel: +254 720 98 44 57 / 733 98 44 57 </a></li></ul></div>
+    </section>
     <script>
         document.getElementById('formula').addEventListener('change', function() {
             // Hide all additional input sections initially
@@ -252,20 +280,4 @@
     }
 }
     </script>
-    <br><br><br><br><br><br><br>
-    <section id="footer">
-        <div class="footer">
-                <ul><li><a href="" target="_blank" noopener="" class=""> <b>Powered by:</b></a></li> </ul></div>
-        <div class="footer">
-                <ul><li><a href="https://portfolio-duncan-kitune.netlify.app/" target="_blank" noopener="" class=""> <b></b> Dev Code Universe, KE </a></li> </ul></div>        
-        <div class="footer">
-                <ul><li><a href="#" target="_blank" noopener="" class="">&</a></li> </ul></div>
-        <div class="footer">
-                <ul><li><a href="https://consultingafrica.netlify.app/" target="_blank" noopener="" class=""> <b></b> DKC Consulting Africa </a></li> </ul></div>
-        <div class="footer"> 
-                <ul><li>&copy; 2024</li></ul></div>
-        <div class="footer">
-            <ul><li><a href="tel:+254720984457" target="_blank">Tel: +254 720 98 44 57 / 733 98 44 57 </a></li></ul></div>
-    </section>
-</body>
 </html>

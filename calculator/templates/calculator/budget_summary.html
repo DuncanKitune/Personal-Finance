@@ -12,6 +12,14 @@
             padding: 20px;
             color: #333;
         }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
         h1, .title {
             margin: auto;
             font-size: 2rem;           
@@ -24,6 +32,16 @@
         }
         h3 {
             color: #4CAF50;
+        }
+        .a{
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        .a:hover{
+            color: #38761d;
+            text-decoration: wavy;
+            cursor: pointer;
+
         }
         p {
             font-size: smaller;
@@ -100,11 +118,12 @@
     </style>
 </head>
 <body>
+    <a href="{% url 'main_menu' %}" class="a">Home</a><br><br>
     <h1>My Personal Budgeting & Cashflow Manager</h1>
-    <br>
-    <a href="{% url 'main_menu' %}" class="Home">Home</a>
+    
+    <div class="container">
     <p><strong>Why budget?</strong> Have you ever wondered why you are always in debt? Why you always don't have anything saved or invested after a day's hard work? The problem could be how you are spending your money. If you don't track your expenses, you will always have financial struggles in achieving your goals.</p>
-    <p>Enter your income and expenses below to see where you are going wrong and get expert recommendations.</p>
+    <p>Enter your income and expenses below to see where you are going wrong and get expert recommendations.</p></div>
 
     <form method="POST" action="{% url 'personal_budget' %}">
         {% csrf_token %}

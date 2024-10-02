@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exponential Growth Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 1rem;
+            padding: 1rem;
+            /* display: flex; */
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 1000px;
+            width: 100%;
+            margin: auto;
+        }
+    
+        h1, .title {
+            margin: auto;
+            font-size: 2rem;           
+        }
+        h2 {
+            color: green;
+            text-align: center;
+            margin: auto;
+            font-size: 18px;
+        }
+        h3 {
+            color: #4CAF50;
+        }
+        p {
+            font-size: smaller;
+            font-style: normal;
+            color: gray;
+        } 
+        .a{
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        .a:hover{
+            color: #38761d;
+            text-decoration: wavy;
+            cursor: pointer;
+
+        }
+        #footer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between; /* This will space the footer items evenly */
+        align-items: center; /* Aligns items vertically in the center */
+        background-color: #38761d; /* Green background */
+        color: white; /* Text color set to white */
+        padding: 10px; /* Adds padding inside the footer */
+        font-size: medium;
+    }
+    .footer{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        position: relative;
+        height: 2rem;
+    }
+    .footer li{
+        color: white;
+        font-size: small;
+        text-decoration: none;
+        list-style: none;
+    }
+    .footer ul{
+        padding: 0;
+        margin: 0;
+    }
+    .footer a {
+        font-size: small;
+        color: white;
+        text-decoration: none;
+    } 
+    @media(max-width: 768px){
+        .button-container{
+        max-height: 150px;
+        max-width: 250px;
+        flex-wrap: wrap;
+        overflow: hidden;
+        overflow-y: scroll;
+        padding: auto;
+        margin: auto;
+        }
+    }
+    @media(max-width: 768px){
+        .footer a{
+        gap: auto;
+        flex-wrap: wrap;
+        font-size: 80%;
+        }
+    }
+    @media(max-width: 768px){
+        h1 span{
+        font-size: 50%;
+        }
+    }
+    @media(max-width: 768px){
+        p{
+        font-size: 70%;
+        }
+    }
+    </style>
+</head>
+<body>
+    <h3><a href="{% url 'main_menu' %}" class="a">Home</a></h3>
+    <br>
+    <div class="container">
+    <h1>Terms & Conditions</h1>
+    <br>
+        <h3>Last updated: 01/10/2024</h3>
+        
+        These Terms and Conditions ("Terms") govern your use of the financial advisory services ("Services") provided on this webpage. By accessing or using the Services, you agree to comply with these Terms. If you do not agree with any part of these Terms, you should discontinue use of our Services immediately.      
+    
+        
+        <h2>1. Acceptance of Terms</h2>
+        
+        By using our Services, you accept and agree to be bound by these Terms and all applicable laws and regulations. If you do not agree to these Terms, you are prohibited from using or accessing this site.
+        
+        <h2>2. Financial Advice Disclaimer</h2>
+        
+        All information, opinions, or data presented on this site are for informational purposes only and should not be considered financial advice, investment advice, or a recommendation to make any specific investment or financial decision. The information provided does not constitute any legal, tax, accounting, or investment advice. 
+        
+        You should seek professional financial advice from a certified advisor tailored to your individual circumstances before making any financial decisions. The use of any information provided on this webpage is at your own risk.
+        
+        <h2>3. No Guarantee of Results</h2>
+        
+        While every effort is made to ensure that the information on this site is accurate and up to date, we make no guarantees or warranties of any kind, whether expressed or implied, about the completeness, accuracy, reliability, or suitability of the information for your particular financial situation. 
+        
+        The results obtained from using the information provided on this site may vary depending on individual circumstances, and we cannot guarantee any specific outcome.
+        
+       <h2>4. User Responsibilities</h2>
+        
+        - You agree to use the Services for lawful purposes only.
+        - You are responsible for ensuring the accuracy of all personal and financial data you input into the site.
+        - You must not misuse the Services in any way that could damage, disable, or impair the site’s functionality.
+        
+        <h2>5. Intellectual Property Rights</h2>
+        
+        All content, designs, text, graphics, logos, and other materials provided through this site are owned by or licensed to us. You may not reproduce, distribute, or otherwise exploit any of the site content without express written permission.
+        
+        <h2>6. Third-Party Links</h2>
+        
+        This site may contain links to third-party websites. These links are provided solely for your convenience. We do not endorse or control these external sites and are not responsible for their content, products, or services. Use of third-party websites is at your own risk and subject to the terms and policies of those sites.
+        
+        <h2>7. Limitation of Liability</h2>
+        
+        To the fullest extent permitted by law, we shall not be held liable for any indirect, incidental, special, consequential, or punitive damages arising out of your access to, or use of, our Services, including but not limited to errors or omissions in any content, loss of data, or any financial losses you may incur.
+        
+        <h2>8. Indemnification</h2>
+        
+        You agree to indemnify, defend, and hold harmless <a href="https://www.moneymaestro." class="a">Money Maestro</a> and its affiliates, officers, employees, and agents from any claim, liability, loss, or damage arising from your use of the Services or violation of these Terms.
+        
+        <h2>9. Modifications to the Terms</h2>
+        
+        We reserve the right to modify these Terms at any time without prior notice. Changes will be posted on this page, and your continued use of the Services after such changes will constitute your acceptance of the modified Terms.
+        
+        <h2>10. Governing Law</h2>
+        
+        These Terms shall be governed by and construed in accordance with the laws of Kenya, without regard to it's conflict of law provisions.
+        
+        <h2>11. Termination</h2>
+        
+        We reserve the right to terminate or suspend your access to the Services at any time, without prior notice, for conduct that we deem to violate these Terms or is harmful to other users.
+        
+        <br><br>
+        <b>Disclaimer</b>
+        
+        The information provided on this site is for general informational purposes only and does not constitute financial, investment, or other professional advice. While we strive to ensure the information is accurate, complete, and current, we do not guarantee or warrant its accuracy. Use of any information provided on this site is at your own risk, and we will not be held liable for any losses or damages incurred from following or relying on the information provided.
+        
+        For specific financial advice tailored to your personal situation, consult a qualified financial advisor.
+        
+        <br>
+        By using our Services, you acknowledge that you have read and understood these Terms and agree to be bound by them.
+        
+        <h3>Contact Information:</h3>
+        If you have any questions about these Terms, please contact us through our <a href="mailto:info.moneymaestro." class="a">Email</a>.
+        </p>
+    </div>
+</body>
+    <br><br><br><br><br><br>
+
+    <section id="footer">
+        <div class="footer">
+                <ul><li><a href="" target="_blank" noopener="" class=""> <b>Powered by:</b></a></li> </ul></div>
+        <div class="footer">
+                <ul><li><a href="https://portfolio-duncan-kitune.netlify.app/" target="_blank" noopener="" class=""> <b></b> Dev Code Universe, KE </a></li> </ul></div>        
+        <div class="footer">
+                <ul><li><a href="#" target="_blank" noopener="" class="">&</a></li> </ul></div>
+        <div class="footer">
+                <ul><li><a href="https://consultingafrica.netlify.app/" target="_blank" noopener="" class=""> <b></b> DKC Consulting Africa </a></li> </ul></div>
+        <div class="footer"> 
+                <ul><li>&copy; 2024</li></ul></div>
+        <div class="footer">
+            <ul><li><a href="tel:+254720984457" target="_blank">Tel: +254 720 98 44 57 / 733 98 44 57 </a></li></ul></div>
+    </section>
+</html>    

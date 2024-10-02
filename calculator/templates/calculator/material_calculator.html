@@ -21,6 +21,16 @@
         h2 {
             text-align: center;
         }
+        .a{
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        .a:hover{
+            color: #38761d;
+            text-decoration: wavy;
+            cursor: pointer;
+
+        }
         form {
             display: flex;
             flex-wrap: wrap;
@@ -65,80 +75,78 @@
             background-color: #f8f8f8;
         }
         #footer {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between; /* This will space the footer items evenly */
-    align-items: center; /* Aligns items vertically in the center */
-    background-color: #38761d; /* Green background */
-    color: white; /* Text color set to white */
-    padding: 10px; /* Adds padding inside the footer */
-    font-size: medium;
-}
-
-
-    .footer{
-        display: flex;
-        flex-wrap: wrap;
-        position: relative;
-        justify-content: space-between;
-        align-items: center;
-        height: 2rem;
-       
-    }
-    .footer li{
-        color: white;
-        font-size: small;
-        text-decoration: none;
-        list-style: none;
-    }
-    .footer ul{
-        padding: 0;
-        margin: 0;
-    }
-    .footer a {
-        font-size: small;
-        color: white;
-        text-decoration: none;
-    } 
-    @media(max-width: 768px){
-        .button-container{
-        max-height: 150px;
-        max-width: 250px;
-        flex-wrap: wrap;
-        overflow: hidden;
-        overflow-y: scroll;
-        padding: auto;
-        margin: auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between; /* This will space the footer items evenly */
+            align-items: center; /* Aligns items vertically in the center */
+            background-color: #38761d; /* Green background */
+            color: white; /* Text color set to white */
+            padding: 10px; /* Adds padding inside the footer */
+            font-size: medium;
         }
-    }
-    @media(max-width: 768px){
-        .footer a{
-        gap: auto;
-        flex-wrap: wrap;
-        font-size: 80%;
+        .footer{
+            display: flex;
+            flex-wrap: wrap;
+            position: relative;
+            justify-content: space-between;
+            align-items: center;
+            height: 2rem;       
         }
-    }
-    @media(max-width: 768px){
-        h1 span{
-        font-size: 50%;
+        .footer li{
+            color: white;
+            font-size: small;
+            text-decoration: none;
+            list-style: none;
         }
-    }
-    @media(max-width: 768px){
-        p{
-        font-size: 70%;
+        .footer ul{
+            padding: 0;
+            margin: 0;
         }
-    }
+        .footer a {
+            font-size: small;
+            color: white;
+            text-decoration: none;
+        } 
+        @media(max-width: 768px){
+            .button-container{
+            max-height: 150px;
+            max-width: 250px;
+            flex-wrap: wrap;
+            overflow: hidden;
+            overflow-y: scroll;
+            padding: auto;
+            margin: auto;
+            }
+        }
+        @media(max-width: 768px){
+            .footer a{
+            gap: auto;
+            flex-wrap: wrap;
+            font-size: 80%;
+            }
+        }
+        @media(max-width: 768px){
+            h1 span{
+            font-size: 50%;
+            }
+        }
+        @media(max-width: 768px){
+            p{
+            font-size: 70%;
+            }
+        }
     </style>
 </head>
 <body>
+    <h3><a href="{% url 'main_menu' %}" class="a">Home</a><br></h3>
+    <br>
+    <h1>Building Materials Calculator</h1>
     <div class="container">
-        <h2>Building Materials Calculator</h2>
+       
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit" class="submit-button">Calculate</button>
-        
-
         {% if result %}
         <div class="results">
             <h3>Results</h3>

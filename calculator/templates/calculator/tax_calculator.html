@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tax Liability Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 50%;
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kenya Tax Liability Calculator</h1>
+
+        <!-- Employment Form -->
+        <form method="POST">
+            {% csrf_token %}
+            {{ employment_form.as_p }}
+            <input type="submit" value="Calculate Employment Tax">
+        </form>
+
+        <!-- Business Form -->
+        <form method="POST">
+            {% csrf_token %}
+            {{ business_form.as_p }}
+            <input type="submit" value="Calculate Business Tax">
+        </form>
+    </div>
+</body>
+</html>

@@ -27,6 +27,9 @@
         font-style: italic;
         font-size: 2rem;
     }
+    hr{
+        color: #38761d;
+    }
     h3{
         text-align: left;
         font-size: medium;
@@ -69,6 +72,16 @@
 
         .menu-button:hover {
             background-color: #45a049;
+        }
+        
+        .tc{
+            text-decoration: none;
+            color: #4CAF50;                        
+        }
+        .tc:hover{
+            text-decoration: underline;
+            color: #45a049;  
+            background-color: white;                      
         }
     
     #footer {
@@ -136,44 +149,52 @@
 <body>
     {% csrf_token %}
     <h1> <b>Money Maestro</b> <br><span> my personal finances coach</span></h1>
+    <hr>
     <p>Don't have an accounting, financial or economics background? <b>No Problem! No Need to Worry!</b></p><p>We help you simplify your finances, make smart decisions and achieve your financial goals effortlessly.</p>
     
-    <p><strong>Personal finances involve mastering:</strong> <b>Future Values of Investments</b> (Compound Interest, Time Value of money),<strong> Budgeting and Spending</strong> (Tracking expenses, Setting realistic goals), <strong> Debt Management</strong> (Credit cards, Student loans, Bank/ SACCO loans, etc), <strong> Investing </strong> (Risk tolerance, Diversification, etc), <strong> Retirement Planning</strong> (Saving enough, Investment Strategy), <strong>Estate Planning</strong> (Insurance, Trusts, etc.),<strong> Taxes</strong> (Tax Laws, Tax planning, etc), <strong> Financial Literacy</strong> (Basic concepts, Decision-making, etc)  </p>
+    <p><strong>Personal finances involve mastering:</strong></p>
+        <p><b>Future Values of Investments</b> (Compound Interest, Annuity Interest, Time value of money),<strong> Budgeting and Spending</strong> (Tracking expenses, Setting realistic goals), <strong> Debt Management</strong> (Credit cards, Student loans, Bank/ SACCO loans, etc), <strong> Investing </strong> (Risk tolerance, Diversification, etc), <strong> Retirement Planning</strong> (Saving enough, Investment strategy), <strong>Estate Planning</strong> (Insurance, Trusts, etc.),<strong> Taxes</strong> (Tax laws, Tax planning, etc), <strong> Financial Literacy</strong> (Basic concepts, Decision-making, etc)  </p>
     <br>
     <h3>Select an option for assistance:</h3>
 
     <div class="button-container">
-        <a class="menu-button" href="{% url 'compound_interest' %}">Compound Interest </a>
-        <a class="menu-button" href="{% url 'calculate_future_value' %}">Annnuity Future Value</a>
+        <a class="menu-button" href="{% url 'compound_interest' %}">Compound Interest Calculator</a>
+        <a class="menu-button" href="{% url 'calculate_future_value' %}">Annuity Interest Calculator</a>
+        <a class="menu-button" href="{% url 'exponential_growth' %}">Exponential Growth Calculator</a>
         <a class="menu-button" href="{% url 'calculate_principle' %}">Savings Instalments Calculator</a>
         <a class="menu-button" href="{% url 'personal_budget' %}">Budgeting & Cashflow</a>
         <a class="menu-button" href="{% url 'net_worth_calculator' %}">Networth Calculator</a>
-        <a class="menu-button" href="{% url 'risk_calculations' %}">Retirement Planner</a>        
-        <a class="menu-button" href="{% url 'calculate_principle' %}">Loan Armotization Schedule</a>
-        <a class="menu-button" href="{% url 'calculate_principle' %}">Tax Liabilities Manager</a>
-        <a class="menu-button" href="{% url 'calculate_principle' %}">Car Import Duty Calculator</a>
+        <a class="menu-button" href="{% url 'retirement_planner' %}">Retirement Planner</a>        
+        <a class="menu-button" href="{% url 'loan_amortization_schedule' %}">Loan Armotization Schedule</a>
+        <a class="menu-button" href="{% url 'tax_calculator' %}">Tax Liabilities Manager</a>
+        <a class="menu-button" href="{% url 'calculate_import_cost' %}">Car Import Duty Calculator</a>
         <a class="menu-button" href="{% url 'calculate_materials' %}">Construction Materials Estimate</a> 
         <a class="menu-button" href="{% url 'risk_calculations' %}">Business Risk Calculator</a>       
         <a class="menu-button" href="{% url 'feasibility_study' %}">Investments Feasiility Study</a>
         
     </div>
+    <br><br><br><br><br><br>
+    <h1>DISCLAIMER</h1><h3>T&C Apply. This App is for informational and guidance purposes only. For a more personalised and professional advice, please contact an expert  <a href="https://consultingafrica.netlify.app/" class="tc">DKC Consulting Africa</a>  </h3>
 </body>
 <br><br><br><br><br><br>
-
+<footer>
     <section id="footer">
         <div class="footer">
                 <ul><li><a href="" target="_blank" noopener="" class=""> <b>Powered by:</b></a></li> </ul></div>
         <div class="footer">
                 <ul><li><a href="https://portfolio-duncan-kitune.netlify.app/" target="_blank" noopener="" class=""> <b></b> Dev Code Universe, KE </a></li> </ul></div>        
         <div class="footer">
-                <ul><li><a href="#" target="_blank" noopener="" class="">&</a></li> </ul></div>
+                <ul><li><a href="#" target="_blank" noopener="" class="">and</a></li> </ul></div>
         <div class="footer">
                 <ul><li><a href="https://consultingafrica.netlify.app/" target="_blank" noopener="" class=""> <b></b> DKC Consulting Africa </a></li> </ul></div>
+        <div class="footer">
+                <ul><li><a href="{% url 'terms_conditions' %}" target="_blank" noopener="" class=""> <b></b> T&C </a></li> </ul></div>
         <div class="footer"> 
                 <ul><li>&copy; 2024</li></ul></div>
         <div class="footer">
             <ul><li><a href="tel:+254720984457" target="_blank">Tel: +254 720 98 44 57 / 733 98 44 57 </a></li></ul></div>
     </section>
+</footer>
 </html>
 
 <!-- <style>

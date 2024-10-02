@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payslip</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #388e3c;
+            font-size: 1.75rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        h3 {
+            color: #555;
+            font-size: 1.25rem;
+            margin-top: 20px;
+        }
+        p{
+            font-size: smaller;
+            color: gray;           
+        }
+        a {
+            text-decoration: none;
+            color: blueviolet;
+            font-weight: bold;
+        }
+        .a{
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        .a:hover{
+            color: #38761d;
+            text-decoration: wavy;
+            cursor: pointer;
+
+        }
+        label, select, input {
+            display: block;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        select, input {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #employedResult, #businessResult {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 0.9rem;
+            margin-top: 0rem;
+        }
+        .footer li{
+            color: white;
+            font-size: small;
+            text-decoration: none;
+            list-style: none;
+        }
+        .footer ul{
+            padding: 0;
+            margin: 0;
+        }
+        #footer a {
+            color: white;
+            text-decoration: none;
+            list-style: none;
+        }
+        #footer a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            button {
+                width: 100%;
+                padding: 10px;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a  href="{% url 'main_menu' %}" class="a">Home</a><br>
+
+    <div class="container">
+        <h1>Tax Liability Guide - Kenya</h1>
+
+        <label for="status">Select your employment status:</label>
+        <select id="status" onchange="toggleSections()">
+            <option value="select">--Select--</option>
+            <option value="employed">Employed</option>
+            <option value="business">Business</option>
+        </select>
+
+        <!-- Employed Section -->
+        <div id="employedSection" class="section" style="display:none;">
+            <h2>Employed Tax Calculator</h2>
+            <label for="residentStatus">Are you a resident or non-resident?</label>
+            <select id="residentStatus">
+                <option value="resident">Resident</option>
+                <option value="nonResident">Non-Resident</option>
+            </select>
+
+            <label for="netGross">Input your salary type:</label>
+            <select id="netGross">
+                <option value="gross">Gross Pay</option>
+                <option value="net">Net Pay</option>
+            </select>
+
+            <label for="name">Name:</label>
+            <input type="text" id="name" placeholder="Enter your name">
+
+            <label for="income">Enter your income:</label>
+            <input type="number" id="income" placeholder="Enter income">
+
+            <label for="additionalIncome">Enter additional sole proprietorship income (optional):</label>
+            <input type="number" id="additionalIncome" placeholder="Enter additional income">
+
+            <button onclick="calculateEmployedTax()">Calculate Tax</button>
+            <div id="employedResult"></div>
+        </div>
+
+        <!-- Business Section -->
+        <div id="businessSection" class="section" style="display:none;">
+            <h2>Business Tax Calculator</h2>
+            <label for="businessIncome">Select your business income range:</label>
+            <select id="businessIncome">
+                <option value="select">--Select--</option>
+                <option value="1m_20m">1 Million to 20 Million</option>
+                <option value="above20m">Above 20 Million</option>
+            </select>
+
+            <button onclick="calculateBusinessTax()">Show Results</button>
+            <div id="businessResult"></div>
+        </div>
+    </div>
+
+    
+
+    <script>
+        function toggleSections() {
+            const status = document.getElementById("status").value;
+            document.getElementById("employedSection").style.display = status === "employed" ? "block" : "none";
+            document.getElementById("businessSection").style.display = status === "business" ? "block" : "none";
+        }
+
+        function calculateEmployedTax() {
+            const name = document.getElementById("name").value;
+            const income = parseFloat(document.getElementById("income").value);
+            const additionalIncome = parseFloat(document.getElementById("additionalIncome").value || 0);
+            const grossIncome = income + additionalIncome;
+            let tax = grossIncome <= 24000 ? grossIncome * 0.1 : grossIncome * 0.3;
+            const nhif = 500;
+            const nssf = 200;
+            const netPay = grossIncome - tax - nhif - nssf;
+
+            document.getElementById("employedResult").innerHTML = `
+                <h3>Payslip for ${name}</h3>
+                <p>Gross Pay: ${grossIncome.toFixed(2)}</p>
+                <p>P.A.Y.E: ${tax.toFixed(2)}</p>
+                <p>NHIF: ${nhif.toFixed(2)}</p>
+                <p>NSSF: ${nssf.toFixed(2)}</p>
+                <h4>Net Pay: ${netPay.toFixed(2)}</h4>
+            `;
+        }
+
+        function calculateBusinessTax() {
+            const incomeRange = document.getElementById("businessIncome").value;
+            let taxAdvice = incomeRange === "1m_20m" ? 
+                "You need to pay 1% turnover tax." : 
+                "You are subject to corporate income tax at 30%.";
+
+            document.getElementById("businessResult").innerHTML = `<p>${taxAdvice}</p>`;
+        }
+    </script>
+</body>
+<br><br><br><br><br><br><br><br>
+
+    <section id="footer">
+        <div class="footer">
+                <ul><li><a href="" target="_blank" noopener="" class=""> <b>Powered by:</b></a></li> </ul></div>
+        <div class="footer">
+                <ul><li><a href="https://portfolio-duncan-kitune.netlify.app/" target="_blank" noopener="" class=""> <b></b> Dev Code Universe, KE </a></li> </ul></div>        
+        <div class="footer">
+                <ul><li><a href="#" target="_blank" noopener="" class="">&</a></li> </ul></div>
+        <div class="footer">
+                <ul><li><a href="https://consultingafrica.netlify.app/" target="_blank" noopener="" class=""> <b></b> DKC Consulting Africa </a></li> </ul></div>
+        <div class="footer"> 
+                <ul><li>&copy; 2024</li></ul></div>
+        <div class="footer">
+            <ul><li><a href="tel:+254720984457" target="_blank">Tel: +254 720 98 44 57 / 733 98 44 57 </a></li></ul></div>
+    </section>
+</html>

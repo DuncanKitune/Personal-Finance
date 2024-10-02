@@ -12,6 +12,24 @@
         background-color: #f4f4f9;
         color: #333;
     }
+    .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .a{
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        .a:hover{
+            color: #38761d;
+            text-decoration: wavy;
+            cursor: pointer;
+
+        }
     form {
         margin: 20px 0;
     }
@@ -97,9 +115,10 @@
 </Style>
 
 <body>
+    <a  href="{% url 'main_menu' %}" class="a">Home</a><br>
     <h1>Calculate Instalments Amount</h1>
     <br>
-    <a  href="{% url 'main_menu' %}" class="Home">Home</a>
+    <div class="container">
     <p>Perhaps you have a taget amount eg Your architect told you that your dream house will cost 10,000,000 or your realtor told you the cost of land or that higher education you want to undertake or even you want to buy a car and you want to know if within a certain period eg 3 years, you can raise the amount needed without necessarily getting external financing eg loans etc.</p>
                 <p>You calculate the amount you will need to save per period (instalments) within your targeted years to achieve your goal here.</p><p>If not sure what interest rate to use, you can use the CBK base lending rate of 12.75%.</p>
     <form method="POST">
@@ -110,11 +129,13 @@
         <input type="number" name="target_amount" placeholder="Targeted Amount">
         <button type="submit">Calculate</button>
     </form>
+    
     {% if principal %}
     <div class="result">
         <h2>Required Savings Instalments: {{ principal }} KES</h2>
     </div>
     {% endif %}
+    </div>
 </body>
 <br><br><br><br><br><br>
 

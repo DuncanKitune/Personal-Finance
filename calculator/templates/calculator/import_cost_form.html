@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Amortization Schedule</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f7f7f7;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .a{
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        form {
+            margin-bottom: 30px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: right;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        #footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between; /* This will space the footer items evenly */
+    align-items: center; /* Aligns items vertically in the center */
+    background-color: #38761d; /* Green background */
+    color: white; /* Text color set to white */
+    padding: 10px; /* Adds padding inside the footer */
+    font-size: medium;
+}
+    .footer{
+        display: flex;
+        flex-wrap: wrap;
+        position: relative;
+        justify-content: space-between;
+        align-items: center;
+        height: 2rem;
+       
+    }
+    .footer li{
+        color: white;
+        font-size: small;
+        text-decoration: none;
+        list-style: none;
+    }
+    .footer ul{
+        padding: 0;
+        margin: 0;
+    }
+    .footer a {
+        font-size: small;
+        color: white;
+        text-decoration: none;
+    } 
+    </style>
+</head>
+<body>
+    <a  href="{% url 'main_menu' %}" class="a">Home</a><br>
+    <h1>Car Import Cost Calculator</h1>
+<div class="container">
+        
+    <form method="POST">
+        {% csrf_token %}
+        <label for="car_make">Car Make:</label>
+        <input type="text" name="car_make" required><br>
+    
+        <label for="car_model">Car Model:</label>
+        <input type="text" name="car_model" required><br>
+    
+        <label for="year_of_manufacture">Year of Manufacture:</label>
+        <input type="number" name="year_of_manufacture" required><br>
+    
+        <label for="cif_value">CIF Value (in KES):</label>
+        <input type="number" step="0.01" name="cif_value" required><br>
+    
+        <button type="submit">Calculate Import Cost</button>
+    </form>
+    
+    {% if total_cost %}
+        <h3>Your total cost of importing {{ vehicle_info }} is: KES {{ total_cost|floatformat:2 }}</h3>
+    {% elif vehicle_info %}
+        <h3>{{ vehicle_info }}</h3>
+    {% endif %}
+    
+</div>
+
+</body>
+<br><br><br><br><br><br>
+<footer>
+    <section id="footer">
+        <div class="footer">
+                <ul><li><a href="" target="_blank" noopener="" class=""> <b>Powered by:</b></a></li> </ul></div>
+        <div class="footer">
+                <ul><li><a href="https://portfolio-duncan-kitune.netlify.app/" target="_blank" noopener="" class=""> <b></b> Dev Code Universe, KE </a></li> </ul></div>        
+        <div class="footer">
+                <ul><li><a href="#" target="_blank" noopener="" class="">and</a></li> </ul></div>
+        <div class="footer">
+                <ul><li><a href="https://consultingafrica.netlify.app/" target="_blank" noopener="" class=""> <b></b> DKC Consulting Africa </a></li> </ul></div>
+        <div class="footer">
+                <ul><li><a href="{% url 'terms_conditions' %}" target="_blank" noopener="" class=""> <b></b> T&C </a></li> </ul></div>
+        <div class="footer"> 
+                <ul><li>&copy; 2024</li></ul></div>
+        <div class="footer">
+            <ul><li><a href="tel:+254720984457" target="_blank">Tel: +254 720 98 44 57 / 733 98 44 57 </a></li></ul></div>
+    </section>
+</footer>
+</html>

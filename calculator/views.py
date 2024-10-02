@@ -4,12 +4,10 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
 import random
-from django.http import HttpResponse
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 import io
 from django.contrib import messages
-from django.http import HttpResponse
 from django.template.loader import render_to_string
 import math
 from io import BytesIO
@@ -51,6 +49,9 @@ def compound_interest(request):
 
 def main_menu(request):
     return render(request, 'calculator/index.html')
+
+def terms_conditions(request):
+    return render(request, 'calculator/terms_conditions.html')
 
 def calculate_future_value(request):
     if request.method == 'POST':
@@ -401,8 +402,6 @@ def generate_pdf(request):
     response['Content-Disposition'] = 'attachment; filename="risk_results.pdf"'
     return response
 
-from django.shortcuts import render
-from django import forms
 
 # Define the form
 class MaterialCalculatorForm(forms.Form):
@@ -615,6 +614,362 @@ def feasibility_study(request):
         'cost_formset': cost_formset
     })
 
+
+def exponential_growth(request):
+    if request.method == 'POST':
+        try:
+            # Get the input values from the form
+            investment_name = forms.CharField(label="Investment Name", max_length=100)
+            initial_amount = float(request.POST.get('initial_amount'))
+            growth_rate = float(request.POST.get('growth_rate'))
+            time = float(request.POST.get('time'))
+
+            # Calculate exponential growth
+            result = initial_amount * math.exp(growth_rate * time)
+            
+            # Round the result to 2 decimal places for display
+            result = round(result, 2)
+
+            # Pass the result back to the template
+            context = {
+                'investment_name': investment_name,
+                'initial_amount': initial_amount,
+                'growth_rate': growth_rate,
+                'time': time,
+                'result': result,
+                'error': None
+            }
+        except ValueError:
+            context = {
+                'error': 'Please enter valid numeric values.'
+            }
+    else:
+        context = {}
+    
+    return render(request, 'calculator/exponential_growth.html', context)
+
+def retirement_planner(request):
+    if request.method == 'POST':
+        try:
+            # Get the input values from the form
+            retirement_date = forms.CharField(label="Planned Date of Retirement", max_length=100)
+            meals_shopping = float(request.POST.get('meals_shopping'))
+            transport_fuel = float(request.POST.get('transport_fuel'))
+            vehicle_maintenance_costs = float(request.POST.get('vehicle_maintenance_costs'))
+            clothing_personal_grooming = float(request.POST.get('clothing_personal_grooming'))
+            jewellerly_beauty = float(request.POST.get('jewellerly_beauty'))
+            clubs_membership_fee = float(request.POST.get('clubs_membership_fee'))
+            insurance = float(request.POST.get('insurance'))
+            holidays_vacations = float(request.POST.get('holidays_vacations'))
+            workers = float(request.POST.get('workers'))
+            church_contributions = float(request.POST.get('church_contributions'))
+            community_charity_contributions = float(request.POST.get('community_charity_contributions'))
+            land_rates = float(request.POST.get('land_rates'))
+            time = float(request.POST.get('time'))
+
+            # Calculate exponential growth
+            result = meals_shopping + transport_fuel + vehicle_maintenance_costs + clothing_personal_grooming + jewellerly_beauty + clubs_membership_fee + insurance + holidays_vacations + workers + church_contributions + community_charity_contributions + land_rates
+            
+            # Round the result to 2 decimal places for display
+            result = round(result, 2)
+
+            # Pass the result back to the template
+            context = {
+                'retirement_date': retirement_date,
+                'meals_shopping': meals_shopping,
+                'transport_fuel': transport_fuel,
+                'vehicle_maintenance_costs': vehicle_maintenance_costs,
+                'clothing_personal_grooming': clothing_personal_grooming,
+                'jewellerly_beauty': jewellerly_beauty,
+                'clubs_membership_fee': clubs_membership_fee,
+                'insurance': insurance,
+                'holidays_vacations': holidays_vacations,
+                'workers': workers,
+                'church_contributions': church_contributions,
+                'community_charity_contributions': community_charity_contributions,
+                'land_rates': land_rates,
+                'time': time,
+                'result': result,
+                'error': None
+            }
+        except ValueError:
+            context = {
+                'error': 'Please enter valid numeric values.'
+            }
+    else:
+        context = {}
+    
+    return render(request, 'calculator/retirement_planner.html', context)
+
+   
+
+def loan_amortization_schedule(request):
+    schedule = None
+    formula_type = None
+    total_interest = 0  # Initialize total interest
+
+    if request.method == 'POST':
+        loan_amount = float(request.POST.get('loan_amount'))
+        interest_rate = float(request.POST.get('interest_rate')) / 100
+        loan_term = int(request.POST.get('loan_term'))
+        formula_type = request.POST.get('formula_type')
+        payments_per_year = 12
+
+        # Determine monthly interest rate and number of payments
+        monthly_interest_rate = interest_rate / payments_per_year
+        num_payments = loan_term * payments_per_year
+
+        schedule = []
+        balance = loan_amount
+
+        if formula_type == 'reducing_balance':
+            for i in range(1, num_payments + 1):
+                interest_payment = balance * monthly_interest_rate
+                total_payment = loan_amount / num_payments + interest_payment
+                closing_balance = balance - (loan_amount / num_payments)
+
+                total_interest += interest_payment  # Add interest to total
+
+                schedule.append({
+                    'month': i,
+                    'opening_balance': round(balance, 2),
+                    'interest_payment': round(interest_payment, 2),
+                    'total_payment': round(total_payment, 2),
+                    'closing_balance': round(closing_balance, 2)
+                })
+
+                balance = closing_balance
+        elif formula_type == 'straight_line':
+            monthly_payment = loan_amount / num_payments
+            for i in range(1, num_payments + 1):
+                interest_payment = balance * monthly_interest_rate
+                total_payment = monthly_payment + interest_payment
+                closing_balance = balance - monthly_payment
+
+                total_interest += interest_payment  # Add interest to total
+
+                schedule.append({
+                    'month': i,
+                    'opening_balance': round(balance, 2),
+                    'interest_payment': round(interest_payment, 2),
+                    'total_payment': round(total_payment, 2),
+                    'closing_balance': round(closing_balance, 2)
+                })
+
+                balance = closing_balance
+
+    return render(request, 'calculator/loan_amortization_schedule.html', {
+        'schedule': schedule,
+        'formula_type': formula_type,
+        'total_interest': round(total_interest, 2)  # Pass total interest to the template
+    })
+
+# View for generating PDF
+def generate_pdf(request):
+    loan_amount = float(request.POST.get('loan_amount'))
+    interest_rate = float(request.POST.get('interest_rate')) / 100
+    loan_term = int(request.POST.get('loan_term'))
+    formula_type = request.POST.get('formula_type')
+    payments_per_year = 12
+
+    monthly_interest_rate = interest_rate / payments_per_year
+    num_payments = loan_term * payments_per_year
+    schedule = []
+    balance = loan_amount
+
+    if formula_type == 'reducing_balance':
+        for i in range(1, num_payments + 1):
+            interest_payment = balance * monthly_interest_rate
+            total_payment = loan_amount / num_payments + interest_payment
+            closing_balance = balance - (loan_amount / num_payments)
+            schedule.append({
+                'month': i,
+                'opening_balance': round(balance, 2),
+                'interest_payment': round(interest_payment, 2),
+                'total_payment': round(total_payment, 2),
+                'closing_balance': round(closing_balance, 2)
+            })
+            balance = closing_balance
+    elif formula_type == 'straight_line':
+        monthly_payment = loan_amount / num_payments
+        for i in range(1, num_payments + 1):
+            interest_payment = balance * monthly_interest_rate
+            total_payment = monthly_payment + interest_payment
+            closing_balance = balance - monthly_payment
+            schedule.append({
+                'month': i,
+                'opening_balance': round(balance, 2),
+                'interest_payment': round(interest_payment, 2),
+                'total_payment': round(total_payment, 2),
+                'closing_balance': round(closing_balance, 2)
+            })
+            balance = closing_balance
+
+    # Create PDF
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="amortization_schedule.pdf"'
+
+    buffer = BytesIO()
+    p = canvas.Canvas(buffer)
+
+    p.drawString(100, 800, "Loan Amortization Schedule")
+    p.drawString(100, 780, f"Loan Amount: {loan_amount}")
+    p.drawString(100, 760, f"Interest Rate: {interest_rate * 100}%")
+    p.drawString(100, 740, f"Loan Term: {loan_term} years")
+    p.drawString(100, 720, f"Formula Type: {formula_type.capitalize()}")
+
+    y = 700
+    p.drawString(100, y, "Month")
+    p.drawString(150, y, "Opening Balance")
+    p.drawString(250, y, "Interest")
+    p.drawString(350, y, "Total Payment")
+    p.drawString(450, y, "Closing Balance")
+    
+    for row in schedule:
+        y -= 20
+        p.drawString(100, y, str(row['month']))
+        p.drawString(150, y, str(row['opening_balance']))
+        p.drawString(250, y, str(row['interest_payment']))
+        p.drawString(350, y, str(row['total_payment']))
+        p.drawString(450, y, str(row['closing_balance']))
+
+    p.showPage()
+    p.save()
+    buffer.seek(0)
+
+    return HttpResponse(buffer, content_type='application/pdf')
+
+# Sample car data stored directly in the view
+car_data = [
+    {"make": "Toyota", "model": "Corolla", "year": 2015, "retail_price": 2000000},
+    {"make": "Nissan", "model": "Altima", "year": 2016, "retail_price": 2500000},
+    {"make": "BMW", "model": "320i", "year": 2018, "retail_price": 3500000},
+    # Add more cars as needed
+]
+
+def calculate_import_cost(request):
+    total_cost = None
+    vehicle_info = None
+
+    if request.method == 'POST':
+        car_make = request.POST.get('car_make')
+        car_model = request.POST.get('car_model')
+        year_of_manufacture = int(request.POST.get('year_of_manufacture'))
+        cif_value = float(request.POST.get('cif_value'))
+
+        # Find the car's retail price (CRSP) from the hardcoded data
+        car = next(
+            (car for car in car_data 
+             if car["make"].lower() == car_make.lower() and
+                car["model"].lower() == car_model.lower() and
+                car["year"] == year_of_manufacture),
+            None
+        )
+
+        if car:
+            crsp = car['retail_price']
+            vehicle_info = f"{car_make} {car_model} ({year_of_manufacture})"
+
+            # Depreciation (10% per year up to 60%)
+            depreciation_rate = min((2024 - year_of_manufacture) * 0.1, 0.6)
+            adjusted_crsp = crsp * (1 - depreciation_rate)
+
+            # Calculate taxes
+            import_duty = adjusted_crsp * 0.25
+            excise_duty = (adjusted_crsp + import_duty) * 0.20
+            vat = (adjusted_crsp + import_duty + excise_duty) * 0.16
+            idf_fee = cif_value * 0.0225
+            railways_levy = cif_value * 0.015
+
+            # Total taxes
+            total_taxes = import_duty + excise_duty + vat + idf_fee + railways_levy
+            total_cost = cif_value + total_taxes
+
+        else:
+            vehicle_info = "Car details not found in the database."
+
+    return render(request, 'calculator/import_cost_form.html', {
+        'total_cost': total_cost,
+        'vehicle_info': vehicle_info
+    })
+
+    # Form classes
+class EmploymentForm(forms.Form):
+    name = forms.CharField(label="Name", max_length=100)
+    employment_status = forms.ChoiceField(choices=[('resident', 'Resident'), ('non_resident', 'Non-Resident')])
+    income_type = forms.ChoiceField(choices=[('gross', 'Gross Pay'), ('net', 'Net Pay')])
+    income_amount = forms.DecimalField(label="Income Amount", decimal_places=2)
+    additional_income = forms.DecimalField(label="Additional Sole Proprietorship Income", required=False, decimal_places=2)
+
+class BusinessForm(forms.Form):
+    income_bracket = forms.ChoiceField(choices=[('1m_20m', '1M - 20M'), ('above_20m', 'Above 20M')])
+
+# Helper functions for tax calculations
+def calculate_statutory_deductions(income, additional_income=0):
+    # convert income and additional income to Decimal
+    income = Decimal(income)
+    additional_income = Decimal(additional_income)
+    # Sample values for deductions, you should use real values as per current Kenyan tax regulations
+    PAYE = Decimal(income + additional_income) *Decimal(0.3)  # Example 30% PAYE rate
+    NHIF = Decimal(500.00)  # Fixed amount for NHIF, adjust per current rates
+    NSSF = Decimal(200.00)  # Fixed amount for NSSF, adjust per current rates
+    
+    total_deductions = PAYE + NHIF + NSSF
+    return {'PAYE': PAYE, 'NHIF': NHIF, 'NSSF': NSSF, 'total_deductions': total_deductions}
+
+def calculate_business_tax(income_bracket):
+    if income_bracket == '1m_20m':
+        return {
+            'tax': '15% of your income',
+            'advice': 'You are in the 1M - 20M income bracket. Your tax rate is 15%.'
+        }
+    else:
+        return {
+            'tax': '30% of your income',
+            'advice': 'You are in the Above 20M income bracket. Your tax rate is 30%.'
+        }
+
+# Views
+def tax_calculator(request):
+    if request.method == 'POST':
+        if 'employment_status' in request.POST:
+            form = EmploymentForm(request.POST)
+            if form.is_valid():
+                name = form.cleaned_data['name']
+                income_type = form.cleaned_data['income_type']
+                income = form.cleaned_data['income_amount']
+                additional_income = form.cleaned_data.get('additional_income', 0)
+                
+                # Calculate statutory deductions
+                deductions = calculate_statutory_deductions(income, additional_income)
+                net_income = income - deductions['total_deductions']
+                
+                context = {
+                    'name': name,
+                    'income_type': income_type,
+                    'income': income,
+                    'additional_income': additional_income,
+                    'deductions': deductions,
+                    'net_income': net_income
+                }
+                return render(request, 'calculator/tax_payslip.html', context)
+        
+        elif 'income_bracket' in request.POST:
+            form = BusinessForm(request.POST)
+            if form.is_valid():
+                income_bracket = form.cleaned_data['income_bracket']
+                tax_info = calculate_business_tax(income_bracket)
+                
+                context = {
+                    'tax_info': tax_info,
+                }
+                return render(request, 'calculator/business_tax_advice.html', context)
+
+    else:
+        employment_form = EmploymentForm()
+        business_form = BusinessForm()
+
+    return render(request, 'calculator/tax_calculator.html', {'employment_form': employment_form, 'business_form': business_form})
 
 # def net_worth_calculator(request):
 #     if request.method == 'POST':

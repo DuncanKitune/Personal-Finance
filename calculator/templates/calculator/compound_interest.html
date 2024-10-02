@@ -29,6 +29,16 @@
         padding: auto;
         margin: auto;
     }
+    .a{
+            color: #4CAF50;
+            text-decoration: none;
+        }
+        .a:hover{
+            color: #38761d;
+            text-decoration: wavy;
+            cursor: pointer;
+
+        }
         label {
             display: block;
             margin-bottom: 5px;
@@ -137,10 +147,12 @@ function formatWithCommas(input) {
     </script>
 </head>
 <body>
-    <div class="container">
-        <h1>Compound Interest Calculator</h1>
+    <a  href="{% url 'main_menu' %}" class="a">Home</a><br>
+    <h1>Compound Interest Calculator</h1>
         <!-- <br> -->
-        <a  href="{% url 'main_menu' %}" class="Home">Home</a>
+        
+    <div class="container">
+        
         <p><strong>What is compound interest?</strong> It is a financial concept that allows your money to grow exponentially over time. Unlike simple interest, where interest is calculated only on the principal amount, compound interest is calculated on both the principal and the accumulated interest. This means that your money earns interest on itself, leading to significant growth over the long term.</p>
         <p><strong>The Benefits of Compound Interest;<br></strong>
          <p>
