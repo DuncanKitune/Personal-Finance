@@ -15,6 +15,10 @@ from django.core.files.storage import FileSystemStorage
 from weasyprint import HTML # Import necessary libraries for PDF generation
 from django import forms
 from decimal import Decimal
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 # from weasyprint import WeasyTemplateResponseMixin, WeasyTemplateResponse
 
 # def calculate_future_value(request):
@@ -766,29 +770,31 @@ def loan_amortization_schedule(request):
 
 # View for generating PDF
 def generate_pdf(request):
+    # Retrieve form data from POST request
     loan_amount = float(request.POST.get('loan_amount'))
     interest_rate = float(request.POST.get('interest_rate')) / 100
     loan_term = int(request.POST.get('loan_term'))
     formula_type = request.POST.get('formula_type')
     payments_per_year = 12
 
+    # Calculate monthly interest rate and number of payments
     monthly_interest_rate = interest_rate / payments_per_year
     num_payments = loan_term * payments_per_year
+
+    # Initialize schedule data and variables
     schedule = []
     balance = loan_amount
+    total_interest = 0  # Track total interest for the schedule
 
     if formula_type == 'reducing_balance':
         for i in range(1, num_payments + 1):
             interest_payment = balance * monthly_interest_rate
             total_payment = loan_amount / num_payments + interest_payment
             closing_balance = balance - (loan_amount / num_payments)
-            schedule.append({
-                'month': i,
-                'opening_balance': round(balance, 2),
-                'interest_payment': round(interest_payment, 2),
-                'total_payment': round(total_payment, 2),
-                'closing_balance': round(closing_balance, 2)
-            })
+
+            total_interest += interest_payment  # Add to total interest
+
+            schedule.append([i, round(balance, 2), round(interest_payment, 2), round(total_payment, 2), round(closing_balance, 2)])
             balance = closing_balance
     elif formula_type == 'straight_line':
         monthly_payment = loan_amount / num_payments
@@ -796,47 +802,40 @@ def generate_pdf(request):
             interest_payment = balance * monthly_interest_rate
             total_payment = monthly_payment + interest_payment
             closing_balance = balance - monthly_payment
-            schedule.append({
-                'month': i,
-                'opening_balance': round(balance, 2),
-                'interest_payment': round(interest_payment, 2),
-                'total_payment': round(total_payment, 2),
-                'closing_balance': round(closing_balance, 2)
-            })
+
+            total_interest += interest_payment  # Add to total interest
+
+            schedule.append([i, round(balance, 2), round(interest_payment, 2), round(total_payment, 2), round(closing_balance, 2)])
             balance = closing_balance
 
-    # Create PDF
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="amortization_schedule.pdf"'
-
+    # Create the PDF document
     buffer = BytesIO()
-    p = canvas.Canvas(buffer)
+    pdf = SimpleDocTemplate(buffer, pagesize=letter)
 
-    p.drawString(100, 800, "Loan Amortization Schedule")
-    p.drawString(100, 780, f"Loan Amount: {loan_amount}")
-    p.drawString(100, 760, f"Interest Rate: {interest_rate * 100}%")
-    p.drawString(100, 740, f"Loan Term: {loan_term} years")
-    p.drawString(100, 720, f"Formula Type: {formula_type.capitalize()}")
+    # Data for the PDF table
+    data = [['Month', 'Opening Balance', 'Interest', 'Total Payment', 'Closing Balance']] + schedule
+    data.append(['', '', 'Total Interest Payable', round(total_interest, 2), ''])
 
-    y = 700
-    p.drawString(100, y, "Month")
-    p.drawString(150, y, "Opening Balance")
-    p.drawString(250, y, "Interest")
-    p.drawString(350, y, "Total Payment")
-    p.drawString(450, y, "Closing Balance")
-    
-    for row in schedule:
-        y -= 20
-        p.drawString(100, y, str(row['month']))
-        p.drawString(150, y, str(row['opening_balance']))
-        p.drawString(250, y, str(row['interest_payment']))
-        p.drawString(350, y, str(row['total_payment']))
-        p.drawString(450, y, str(row['closing_balance']))
+    # Create a Table object with the data
+    table = Table(data)
 
-    p.showPage()
-    p.save()
+    # Apply table styling
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'RIGHT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ]))
+
+    # Build the PDF
+    elements = [table]
+    pdf.build(elements)
+
+    # Get the PDF response
     buffer.seek(0)
-
     return HttpResponse(buffer, content_type='application/pdf')
 
 # Sample car data stored directly in the view
