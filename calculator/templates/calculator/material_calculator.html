@@ -40,7 +40,7 @@
             margin-top: 10px;
         }
         input, select {
-            width: 48%;
+            width: 100%;
             padding: 10px;
             margin-top: 10px;
             margin-bottom: 10px;
@@ -141,50 +141,357 @@
     <h3><a href="{% url 'main_menu' %}" class="a">Home</a><br></h3>
     <br>
     <h1>Building Materials Calculator</h1>
+   
     <div class="container">
-       
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="submit-button">Calculate</button>
-        {% if result %}
-        <div class="results">
-            <h3>Results</h3>
+        
+        <form id="material-calculator-form">
+            <!-- Formula Selector -->
+            <label for="formula_type">Select Formula:</label>
+            <select id="formula_type" name="formula_type">
+                <option value="">--Select--</option>
+                <option value="stone_walling">Stone Walling</option>
+                <option value="steelBars">Steel Bars Calculation</option>
+            </select>
+    
+            <!-- Walling Material Costs -->
+            <div id="walling-fields" style="display:none;">
+                <label>Stone Cost per Unit</label>
+                <input type="number" id="stone_unit_cost" name="stone_unit_cost">
+                <label>Cement Cost per Bag</label>
+                <input type="number" id="cement_unit_cost" name="cement_unit_cost">
+                <label>Sand Cost per Unit</label>
+                <input type="number" id="sand_unit_cost" name="sand_unit_cost">
+    
+                <!-- Partitions Section -->
+                <div id="partition-container">
+                    <h3>Partitions</h3>
+                </div>
+                <button type="button" id="add-partition">Add Partition</button>
+    
+                <!-- Doors and Windows Section -->
+                <div id="door-window-container">
+                    <h3>Doors and Windows</h3>
+                </div>
+                <button type="button" id="add-door">Add Door</button>
+                <button type="button" id="add-window">Add Window</button>
+            </div>
+            
+    
+            <!-- Calculate Button -->
+            <button type="submit">Calculate</button>
+        
+            <!-- Steel Bars Calculation Section -->
+        <div id="steelBarsSection" style="display:none;">
+            <h2>Steel Bars Calculation</h2>
+
+            <!-- Steel Bar Fields -->
+            <div id="beam-column-container">
+                <div class="beam-column">
+                    <label for="mainBarDiameter">Diameter of Main Bar (ft):</label>
+                    <input type="number" id="mainBarDiameter" placeholder="Diameter in ft" step="0.1" min="0">
+
+                    <label for="ringDiameter">Diameter of Ring Bar (ft):</label>
+                    <input type="number" id="ringDiameter" placeholder="Diameter in ft" step="0.1" min="0">
+
+                    <label for="barLength">Length of Each Bar (ft):</label>
+                    <input type="number" id="barLength" placeholder="Length in ft" step="0.1" min="0">
+
+                    <label for="costPerMainBar">Cost per Main Bar:</label>
+                    <input type="number" id="costPerMainBar" placeholder="Cost per main bar" step="0.01" min="0">
+
+                    <label for="costPerRingBar">Cost per Ring Bar:</label>
+                    <input type="number" id="costPerRingBar" placeholder="Cost per ring bar" step="0.01" min="0">
+
+                    <label for="beamWidth">Width of Beam/Column (ft):</label>
+                    <input type="number" id="beamWidth" placeholder="Width in ft" step="0.1" min="0">
+
+                    <label for="beamLength">Height/Length of Beam/Column (ft):</label>
+                    <input type="number" id="beamLength" placeholder="Height/Length in ft" step="0.1" min="0">
+
+                    <label for="hooksLength">Hooks Length (ft):</label>
+                    <input type="number" id="hooksLength" placeholder="Hooks length in ft" step="0.1" min="0">
+
+                    <label for="barsPerColumn">Number of Bars per Column:</label>
+                    <input type="number" id="barsPerColumn" placeholder="Number of bars" step="1" min="1">
+
+                    <label for="quantity">Quantity:</label>
+                    <input type="number" id="quantity" placeholder="Quantity" step="1" min="1">
+                </div>
+            </div>
+
+            <!-- Button to Add Additional Beam/Column of Different Sizes -->
+            <button type="button" id="add-beam-column">Add Beam/Column</button>
+
+            <!-- Calculate Button for Steel Bars -->
+            <button type="button" onclick="calculateSteelBars()">Calculate Steel Bars</button>
+
+            <!-- Results Section for Steel Bars -->
+            <div id="steelBarsResult"></div>
+        </div>
+        <hr>
+        
+        <div id="results"></div>
+        </form>
+      
+    </div>
+    
+
+    <script>
+        // Function to handle formula selection and display relevant fields
+document.getElementById("formula_type").addEventListener("change", function() {
+    const selectedFormula = this.value;
+    const wallingFields = document.getElementById("walling-fields");
+    const steelBarsSection = document.getElementById("steelBarsSection");
+
+    // Hide both sections initially
+    wallingFields.style.display = "none";
+    steelBarsSection.style.display = "none";
+
+    // Display the appropriate section based on the selected formula
+    if (selectedFormula === "stone_walling") {
+        wallingFields.style.display = "block";
+    } else if (selectedFormula === "steelBars") {
+        steelBarsSection.style.display = "block";
+    }
+});
+      document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("material-calculator-form");
+    const formulaSelect = document.getElementById("formula_type");
+    const resultContainer = document.getElementById("results");
+    const wallingFields = document.getElementById("walling-fields");
+    const partitionContainer = document.getElementById("partition-container");
+    const addPartitionButton = document.getElementById("add-partition");
+    const doorWindowContainer = document.getElementById("door-window-container");
+    const addDoorButton = document.getElementById("add-door");
+    const addWindowButton = document.getElementById("add-window");
+
+    formulaSelect.addEventListener("change", function () {
+        wallingFields.style.display = formulaSelect.value === "stone_walling" ? "block" : "none";
+    });
+
+    // Add partition, door, or window with quantity input
+    addPartitionButton.addEventListener("click", function () {
+        addSection(partitionContainer, "partition");
+    });
+    addDoorButton.addEventListener("click", function () {
+        addSection(doorWindowContainer, "door");
+    });
+    addWindowButton.addEventListener("click", function () {
+        addSection(doorWindowContainer, "window");
+    });
+
+    function addSection(container, type) {
+        const section = document.createElement("div");
+        section.classList.add(type);
+        section.innerHTML = `
+            <label>${type.charAt(0).toUpperCase() + type.slice(1)} Width (ft):</label>
+            <input type="number" name="${type}_width" required>
+            <label>${type.charAt(0).toUpperCase() + type.slice(1)} Height (ft):</label>
+            <input type="number" name="${type}_height" required>
+            <label>${type.charAt(0).toUpperCase() + type.slice(1)} Quantity:</label>
+            <input type="number" name="${type}_quantity" value="1" min="1" required>
+            <button type="button" class="remove-${type}">Remove</button>
+        `;
+        container.appendChild(section);
+        
+        section.querySelector(`.remove-${type}`).addEventListener("click", () => section.remove());
+    }
+
+    form.addEventListener("input", function () {
+        const formData = new FormData(form);
+        if (formulaSelect.value === "stone_walling") {
+            displayResults(calculateWallingMaterials(formData));
+        }
+    });
+
+    function calculateWallingMaterials(formData) {
+        let totalWallArea = 0;
+        formData.getAll("partition_width").forEach((width, index) => {
+            const height = parseFloat(formData.getAll("partition_height")[index]);
+            const quantity = parseFloat(formData.getAll("partition_quantity")[index]);
+            totalWallArea += parseFloat(width) * height * quantity;
+        });
+
+        let totalDoorWindowArea = 0;
+        formData.getAll("door_width").forEach((width, index) => {
+            const height = parseFloat(formData.getAll("door_height")[index]);
+            const quantity = parseFloat(formData.getAll("door_quantity")[index]);
+            totalDoorWindowArea += parseFloat(width) * height * quantity;
+        });
+        formData.getAll("window_width").forEach((width, index) => {
+            const height = parseFloat(formData.getAll("window_height")[index]);
+            const quantity = parseFloat(formData.getAll("window_quantity")[index]);
+            totalDoorWindowArea += parseFloat(width) * height * quantity;
+        });
+
+        const netWallArea = totalWallArea - totalDoorWindowArea;
+
+        const stoneUnitCost = parseFloat(formData.get("stone_unit_cost")) || 0;
+        const stonesRequired = netWallArea * 0.67;
+        const stoneCost = stonesRequired * stoneUnitCost;
+
+        const cementUnitCost = parseFloat(formData.get("cement_unit_cost")) || 0;
+        const sandUnitCost = parseFloat(formData.get("sand_unit_cost")) || 0;
+        const cementRequired = (netWallArea * 0.3) / 4;
+        const sandRequired = netWallArea * 0.3 * 0.75;
+
+        return {
+            formulaType: "Stone Walling",
+            totalWallArea: totalWallArea.toFixed(2),
+            totalDoorWindowArea: totalDoorWindowArea.toFixed(2),
+            netWallArea: netWallArea.toFixed(2),
+            items: [
+                { name: "Stones", quantity: stonesRequired.toFixed(2), unitCost: stoneUnitCost, totalCost: stoneCost.toFixed(2) },
+                { name: "Cement Bags", quantity: cementRequired.toFixed(2), unitCost: cementUnitCost, totalCost: (cementRequired * cementUnitCost).toFixed(2) },
+                { name: "Sand Units", quantity: sandRequired.toFixed(2), unitCost: sandUnitCost, totalCost: (sandRequired * sandUnitCost).toFixed(2) }
+            ]
+        };
+    }
+
+    function displayResults(result) {
+        resultContainer.innerHTML = `
+            <h3>Results for ${result.formulaType}</h3>
+            <p>Total Wall Area: ${result.totalWallArea} sq ft</p>
+            <p>Total Doors and Windows Area: ${result.totalDoorWindowArea} sq ft</p>
+            <p>Net Wall Area: ${result.netWallArea} sq ft</p>
             <table>
                 <thead>
                     <tr>
                         <th>Material</th>
                         <th>Quantity</th>
-                        <th>Cost (KES)</th>
+                        <th>Unit Cost</th>
+                        <th>Total Cost</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Stones Required</td>
-                        <td>{{ result.material_totals.stones_required|floatformat:0|intcomma }}</td>
-                        <td>{{ result.stone_cost|floatformat:2|intcomma }}</td>
-                    </tr>
-                    <tr>
-                        <td>Cement Bags Required</td>
-                        <td>{{ result.material_totals.cement_required|floatformat:0|intcomma }}</td>
-                        <td>{{ result.cement_cost|floatformat:2|intcomma }}</td>
-                    </tr>
-                    <tr>
-                        <td>Sand Required (units)</td>
-                        <td>{{ result.material_totals.sand_required|floatformat:0|intcomma }}</td>
-                        <td>{{ result.sand_cost|floatformat:2|intcomma }}</td>
-                    </tr>
-                    <tr>
-                        <th>Total Cost</th>
-                        <th></th>
-                        <th>{{ result.total_cost|floatformat:2|intcomma }}</th>
-                    </tr>
+                    ${result.items.map(item => `
+                        <tr>
+                            <td>${item.name}</td>
+                            <td>${item.quantity}</td>
+                            <td>${item.unitCost.toFixed(2)}</td>
+                            <td>${item.totalCost}</td>
+                        </tr>
+                    `).join('')}
                 </tbody>
             </table>
-        </div>
-        </form> 
-        {% endif %}
-    </div>
+        `;
+         // Calculate the grand total
+    const grandTotal = result.items.reduce((sum, item) => sum + parseFloat(item.totalCost), 0);
+    resultContainer.innerHTML += `
+        <h4>Grand Total Cost: ${grandTotal.toFixed(2)}</h4>
+    `;
+    }
+});
+function displayFormulaSection() {
+    const selectedFormula = document.getElementById("formulaSelector").value;
+    document.getElementById("steelBarsSection").style.display = selectedFormula === "steelBars" ? "block" : "none";
+}
+
+// Formula selection toggle
+document.getElementById("formula_type").addEventListener("change", function() {
+    const selectedFormula = this.value;
+    document.getElementById("walling-fields").style.display = selectedFormula === "stone_walling" ? "block" : "none";
+    document.getElementById("steelBarsSection").style.display = selectedFormula === "steelBars" ? "block" : "none";
+});
+
+// Formula selection toggle
+document.getElementById("formula_type").addEventListener("change", function() {
+    const selectedFormula = this.value;
+    document.getElementById("walling-fields").style.display = selectedFormula === "stone_walling" ? "block" : "none";
+    document.getElementById("steelBarsSection").style.display = selectedFormula === "steelBars" ? "block" : "none";
+});
+
+// Function to add additional beam/column fields
+document.getElementById("add-beam-column").addEventListener("click", function() {
+    const container = document.getElementById("beam-column-container");
+    const newBeamColumn = document.createElement("div");
+    newBeamColumn.classList.add("beam-column");
+
+    newBeamColumn.innerHTML = `
+        <label>Diameter of Main Bar (ft):</label>
+        <input type="number" placeholder="Diameter in ft" step="0.1" min="0">
+        
+        <label>Diameter of Ring Bar (ft):</label>
+        <input type="number" placeholder="Diameter in ft" step="0.1" min="0">
+        
+        <label>Length of Each Bar (ft):</label>
+        <input type="number" placeholder="Length in ft" step="0.1" min="0">
+        
+        <label>Cost per Main Bar:</label>
+        <input type="number" placeholder="Cost per main bar" step="0.01" min="0">
+        
+        <label>Cost per Ring Bar:</label>
+        <input type="number" placeholder="Cost per ring bar" step="0.01" min="0">
+        
+        <label>Width of Beam/Column (ft):</label>
+        <input type="number" placeholder="Width in ft" step="0.1" min="0">
+        
+        <label>Height/Length of Beam/Column (ft):</label>
+        <input type="number" placeholder="Height/Length in ft" step="0.1" min="0">
+
+        <label>Hooks Length (ft):</label>
+        <input type="number" placeholder="Hooks length in ft" step="0.1" min="0">
+
+        <label>Number of Bars per Column:</label>
+        <input type="number" placeholder="Number of bars" step="1" min="1">
+
+        <label>Quantity:</label>
+        <input type="number" placeholder="Quantity" step="1" min="1">
+    `;
+    container.appendChild(newBeamColumn);
+});
+
+// Calculate Steel Bars Function
+function calculateSteelBars() {
+    const beamColumns = document.querySelectorAll(".beam-column");
+    let resultHTML = "<h3>Steel Bars Totals</h3><ul>";
+    let grandTotal = 0;
+
+    beamColumns.forEach((beam, index) => {
+        const mainBarDiameter = parseFloat(beam.querySelector('[placeholder="Diameter in ft"]').value);
+        const ringDiameter = parseFloat(beam.querySelector('[placeholder="Diameter in ft"]').value);
+        const barLength = parseFloat(beam.querySelector('[placeholder="Length in ft"]').value);
+        const costPerMainBar = parseFloat(beam.querySelector('[placeholder="Cost per main bar"]').value);
+        const costPerRingBar = parseFloat(beam.querySelector('[placeholder="Cost per ring bar"]').value);
+        const beamWidth = parseFloat(beam.querySelector('[placeholder="Width in ft"]').value);
+        const beamLength = parseFloat(beam.querySelector('[placeholder="Height/Length in ft"]').value);
+        const hooksLength = parseFloat(beam.querySelector('[placeholder="Hooks length in ft"]').value);
+        const barsPerColumn = parseInt(beam.querySelector('[placeholder="Number of bars"]').value, 10);
+        const quantity = parseInt(beam.querySelector('[placeholder="Quantity"]').value, 10);
+
+        // Ring length calculation (in mm)
+        const ringLengthMM = (150 + 300 + 150 + 300 + 200) / 1000; // Convert to meters for calculation
+        const totalRingLengthMM = (barsPerColumn * ringLengthMM) + (hooksLength * 0.3048); // Total length of rings in meters
+        const totalRingLengthFt = totalRingLengthMM / 0.3048; // Convert to feet
+
+        // Calculate total number of rings
+        const spacing = 0.656; // Spacing in feet (200mm)
+        const numRings = Math.floor(20 / spacing); // Total number of rings in 20ft
+        
+        // Total length of rings
+        const totalRingsLength = numRings * totalRingLengthFt; 
+        const totalBars = Math.ceil(totalRingsLength / barLength); // Number of bars needed
+        
+        // Calculate costs
+        const totalMainBarCost = totalBars * costPerMainBar;
+        const totalRingBarCost = (numRings * barsPerColumn) * costPerRingBar;
+
+        // Output
+        resultHTML += `<li>Beam/Column ${index + 1}:<br>
+            Main Bars Needed: ${totalBars}, Total Main Bar Cost: KES ${totalMainBarCost.toFixed(2)},<br>
+            Total Ring Bars Needed: ${numRings * barsPerColumn}, Total Ring Bar Cost: KES ${totalRingBarCost.toFixed(2)}<br>
+        </li>`;
+
+        grandTotal += totalMainBarCost + totalRingBarCost;
+    });
+
+    resultHTML += `<li><strong>Grand Total: KES ${grandTotal.toFixed(2)}</strong></li>`;
+    resultHTML += "</ul>";
+
+    document.getElementById("steelBarsResult").innerHTML = resultHTML;
+}
+</script>
+  
     
 </body>
 <br><br><br><br><br><br>

@@ -261,16 +261,16 @@
 </head>
 <body>
     <a  href="{% url 'main_menu' %}" class="a">Home</a><br><br>
-        <h1 class="title">My Net Worth Calculator</h1>
-    
-       <div class="container">
+        <h1 class="title">My Net Worth Calculator</h1>    
             <p><b>What is Net Worth?</b></p>
-            <p>Your net worth is a snapshot of your financial health. It's the difference between what you own (assets) and what you owe (liabilities).</p>
+            <p>Your net worth is a snapshot of your financial health. It's the difference between what you OWN (assets) and what you OWE (liabilities).</p>
             <p><strong>Let's figure out your net worth together.</strong></p>
-            <p>Simply enter your assets and liabilities below. Assets can include things like house, plots, cars, debtors, stocks, shares, savings accounts, investments, and property, while liabilities might be loans, credit card debt, mobile money loans, creditors, or mortgages.</p>
+            <p>Simply enter your assets and liabilities below. 
+                <br>Assets can include things like house, plots, cars, debtors, stocks, shares, savings accounts, investments, and property. 
+                <br>Liabilities might be loans, credit card debt, mobile money loans, creditors, or mortgages.</p>
+    <div class="container">
         <form method="POST">
             <br>
-
             {% csrf_token %}    
             <!-- Assets Section -->
             <h2>List your Assets</h2>

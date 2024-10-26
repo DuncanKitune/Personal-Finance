@@ -1,0 +1,45 @@
+
+<div class="container">
+       
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="submit-button">Calculate</button>
+        {% if result %}
+        <div class="results">
+            <h3>Results</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Material</th>
+                        <th>Quantity</th>
+                        <th>Cost (KES)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Stones Required</td>
+                        <td>{{ result.material_totals.stones_required|floatformat:0|intcomma }}</td>
+                        <td>{{ result.stone_cost|floatformat:2|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>Cement Bags Required</td>
+                        <td>{{ result.material_totals.cement_required|floatformat:0|intcomma }}</td>
+                        <td>{{ result.cement_cost|floatformat:2|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td>Sand Required (units)</td>
+                        <td>{{ result.material_totals.sand_required|floatformat:0|intcomma }}</td>
+                        <td>{{ result.sand_cost|floatformat:2|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <th>Total Cost</th>
+                        <th></th>
+                        <th>{{ result.total_cost|floatformat:2|intcomma }}</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        </form> 
+        {% endif %}
+    </div> -->

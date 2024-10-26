@@ -406,96 +406,97 @@ def generate_pdf(request):
     response['Content-Disposition'] = 'attachment; filename="risk_results.pdf"'
     return response
 
-
+def calculate_materials(request):
+    return render(request, 'calculator/material_calculator.html')
 # Define the form
-class MaterialCalculatorForm(forms.Form):
-    width = forms.FloatField(label="Width of the House (ft)", required=True)
-    length = forms.FloatField(label="Length of the House (ft)", required=True)
-    height = forms.FloatField(label="Height of the House (ft)", required=True)
-    doors = forms.IntegerField(label="Number of Doors", required=True)
-    door_width = forms.FloatField(label="Width of Doors (ft)", required=True)
-    door_height = forms.FloatField(label="Height of Doors (ft)", required=True)
-    windows = forms.IntegerField(label="Number of Windows", required=True)
-    window_width = forms.FloatField(label="Width of Windows (ft)", required=True)
-    window_height = forms.FloatField(label="Height of Windows (ft)", required=True)
-    cost_per_stone = forms.FloatField(label="Cost per Stone", required=False)
-    cost_per_cement_bag = forms.FloatField(label="Cost per Cement Bag", required=False)
-    cost_per_sand_unit = forms.FloatField(label="Cost per Sand Unit", required=False)
-    cost_per_mason = forms.FloatField(label="Cost per Mason (per day)", required=False)
-    cost_per_laborer = forms.FloatField(label="Cost per Laborer (per day)", required=False)
-    formula_type = forms.ChoiceField(choices=[('stone_walling', 'Stone Walling')], label="Formula Type", required=True)
+# class MaterialCalculatorForm(forms.Form):
+#     width = forms.FloatField(label="Width of the House (ft)", required=True)
+#     length = forms.FloatField(label="Length of the House (ft)", required=True)
+#     height = forms.FloatField(label="Height of the House (ft)", required=True)
+#     doors = forms.IntegerField(label="Number of Doors", required=True)
+#     door_width = forms.FloatField(label="Width of Doors (ft)", required=True)
+#     door_height = forms.FloatField(label="Height of Doors (ft)", required=True)
+#     windows = forms.IntegerField(label="Number of Windows", required=True)
+#     window_width = forms.FloatField(label="Width of Windows (ft)", required=True)
+#     window_height = forms.FloatField(label="Height of Windows (ft)", required=True)
+#     cost_per_stone = forms.FloatField(label="Cost per Stone", required=False)
+#     cost_per_cement_bag = forms.FloatField(label="Cost per Cement Bag", required=False)
+#     cost_per_sand_unit = forms.FloatField(label="Cost per Sand Unit", required=False)
+#     cost_per_mason = forms.FloatField(label="Cost per Mason (per day)", required=False)
+#     cost_per_laborer = forms.FloatField(label="Cost per Laborer (per day)", required=False)
+#     formula_type = forms.ChoiceField(choices=[('stone_walling', 'Stone Walling')], label="Formula Type", required=True)
 
-# Calculation function for materials
-def calculate_materials(width, length, height, doors, door_width, door_height, windows, window_width, window_height):
-    # Perimeter and area of walls
-    perimeter = 2 * (width + length)
-    total_wall_area = perimeter * height
-    door_area = doors * door_width * door_height
-    window_area = windows * window_width * window_height
-    net_wall_area = total_wall_area - (door_area + window_area)
+# # Calculation function for materials
+# def calculate_materials(width, length, height, doors, door_width, door_height, windows, window_width, window_height):
+#     # Perimeter and area of walls
+#     perimeter = 2 * (width + length)
+#     total_wall_area = perimeter * height
+#     door_area = doors * door_width * door_height
+#     window_area = windows * window_width * window_height
+#     net_wall_area = total_wall_area - (door_area + window_area)
     
-    # Stone walling calculations
-    stone_volume = net_wall_area * 0.67  # Assuming 200mm (0.67 ft) wall thickness
-    stone_per_cubic_ft = 0.562  # Approx volume of one stone in cubic feet
-    stones_required = stone_volume / stone_per_cubic_ft
+#     # Stone walling calculations
+#     stone_volume = net_wall_area * 0.67  # Assuming 200mm (0.67 ft) wall thickness
+#     stone_per_cubic_ft = 0.562  # Approx volume of one stone in cubic feet
+#     stones_required = stone_volume / stone_per_cubic_ft
     
-    # Mortar (cement and sand) calculation
-    mortar_volume = stone_volume * 0.3  # 30% of stone volume
-    cement_required = mortar_volume / 4  # 1 part cement, 3 parts sand
-    sand_required = mortar_volume * 0.75  # 3 parts sand
+#     # Mortar (cement and sand) calculation
+#     mortar_volume = stone_volume * 0.3  # 30% of stone volume
+#     cement_required = mortar_volume / 4  # 1 part cement, 3 parts sand
+#     sand_required = mortar_volume * 0.75  # 3 parts sand
     
-    return {
-        'net_wall_area': net_wall_area,
-        'stones_required': stones_required,
-        'cement_required': cement_required,
-        'sand_required': sand_required
-    }
+#     return {
+#         'net_wall_area': net_wall_area,
+#         'stones_required': stones_required,
+#         'cement_required': cement_required,
+#         'sand_required': sand_required
+#     }
 
-# View for handling the form and calculations
-def MaterialCalculatorView(request):
-    form = MaterialCalculatorForm(request.POST or None)
-    result = None
+# # View for handling the form and calculations
+# def MaterialCalculatorView(request):
+#     form = MaterialCalculatorForm(request.POST or None)
+#     result = None
     
-    # Handle form submission and validation
-    if request.method == 'POST' and form.is_valid():
-        # Extract form data
-        width = form.cleaned_data['width']
-        length = form.cleaned_data['length']
-        height = form.cleaned_data['height']
-        doors = form.cleaned_data['doors']
-        door_width = form.cleaned_data['door_width']
-        door_height = form.cleaned_data['door_height']
-        windows = form.cleaned_data['windows']
-        window_width = form.cleaned_data['window_width']
-        window_height = form.cleaned_data['window_height']
+#     # Handle form submission and validation
+#     if request.method == 'POST' and form.is_valid():
+#         # Extract form data
+#         width = form.cleaned_data['width']
+#         length = form.cleaned_data['length']
+#         height = form.cleaned_data['height']
+#         doors = form.cleaned_data['doors']
+#         door_width = form.cleaned_data['door_width']
+#         door_height = form.cleaned_data['door_height']
+#         windows = form.cleaned_data['windows']
+#         window_width = form.cleaned_data['window_width']
+#         window_height = form.cleaned_data['window_height']
         
-        # Optional cost inputs
-        cost_per_stone = form.cleaned_data.get('cost_per_stone', 0)
-        cost_per_cement_bag = form.cleaned_data.get('cost_per_cement_bag', 0)
-        cost_per_sand_unit = form.cleaned_data.get('cost_per_sand_unit', 0)
-        cost_per_mason = form.cleaned_data.get('cost_per_mason', 0)
-        cost_per_laborer = form.cleaned_data.get('cost_per_laborer', 0)
+#         # Optional cost inputs
+#         cost_per_stone = form.cleaned_data.get('cost_per_stone', 0)
+#         cost_per_cement_bag = form.cleaned_data.get('cost_per_cement_bag', 0)
+#         cost_per_sand_unit = form.cleaned_data.get('cost_per_sand_unit', 0)
+#         cost_per_mason = form.cleaned_data.get('cost_per_mason', 0)
+#         cost_per_laborer = form.cleaned_data.get('cost_per_laborer', 0)
         
-        # Perform calculations
-        material_totals = calculate_materials(
-            width, length, height, doors, door_width, door_height, windows, window_width, window_height
-        )
+#         # Perform calculations
+#         material_totals = calculate_materials(
+#             width, length, height, doors, door_width, door_height, windows, window_width, window_height
+#         )
         
-        # Calculate costs if cost data is provided
-        stone_cost = material_totals['stones_required'] * cost_per_stone if cost_per_stone else 0
-        cement_cost = material_totals['cement_required'] * cost_per_cement_bag if cost_per_cement_bag else 0
-        sand_cost = material_totals['sand_required'] * cost_per_sand_unit if cost_per_sand_unit else 0
+#         # Calculate costs if cost data is provided
+#         stone_cost = material_totals['stones_required'] * cost_per_stone if cost_per_stone else 0
+#         cement_cost = material_totals['cement_required'] * cost_per_cement_bag if cost_per_cement_bag else 0
+#         sand_cost = material_totals['sand_required'] * cost_per_sand_unit if cost_per_sand_unit else 0
         
-        # Store the results in a dictionary to display in the template
-        result = {
-            'stone_cost': stone_cost,
-            'cement_cost': cement_cost,
-            'sand_cost': sand_cost,
-            'total_cost': stone_cost + cement_cost + sand_cost,
-            'material_totals': material_totals
-        }
+#         # Store the results in a dictionary to display in the template
+#         result = {
+#             'stone_cost': stone_cost,
+#             'cement_cost': cement_cost,
+#             'sand_cost': sand_cost,
+#             'total_cost': stone_cost + cement_cost + sand_cost,
+#             'material_totals': material_totals
+#         }
     
-    return render(request, 'calculator/material_calculator.html', {'form': form, 'result': result})
+#     return render(request, 'calculator/material_calculator.html', {'form': form, 'result': result})
 
 
 
