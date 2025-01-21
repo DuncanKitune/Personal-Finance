@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %} 
+<head>
+    <title> Simulation Results</title>
+</head>
+<body>
+
+  <h2> Simulation Results  for {{simulation_type|capfirst}} farm</h2>
+  <a href="?pdf=true" target="_blank">Download PDF</a>
+
+    <table>
+    
+    
+      {% if  simulation_type == "herd" %}
+
+         <thead>
+                <tr>
+                    <th>Month</th>
+                    <th>Mothers</th>
+                    <th>Young</th>
+                    <th>Total</th>
+                      <th>Births</th>
+                </tr>
+            </thead>
+             <tbody>
+                {% for month, data in results.items %}
+                <tr>
+                    <td>{{ month }}</td>
+                    <td>{{ data.mothers }}</td>
+                     <td>{{ data.young }}</td>
+                      <td>{{ data.total }}</td>
+                        <td>{{ data.births }}</td>
+                </tr>
+                 {% endfor %}
+             </tbody>
+            {% elif  simulation_type == "chicken" %}
+             <thead>
+              <tr>
+                    <th>Month</th>
+                     <th>Laying</th>
+                    <th>Matured Hens</th>
+                      <th>Total Chicks</th>
+                       <th>New Layings</th>
+             </tr>
+              </thead>
+           <tbody>
+                {% for month, data in results.items %}
+                   <tr>
+                        <td>{{ month }}</td>
+                         <td>{{ data.laying }}</td>
+                           <td>{{ data.mature }}</td>
+                             <td>{{ data.chicks }}</td>
+                           <td>{{ data.new_laying }}</td>
+
+                </tr>
+                {% endfor %}
+           </tbody>
+            {% elif simulation_type == "goat" %}
+               <thead>
+                   <tr>
+                        <th>Month</th>
+                        <th>Mature Does</th>
+                          <th>Kids</th>
+                       <th>New Kids</th>
+
+                  </tr>
+                </thead>
+            <tbody>
+               {% for month, data in results.items %}
+                     <tr>
+                            <td>{{ month }}</td>
+                           <td>{{ data.mothers }}</td>
+                               <td>{{ data.kids }}</td>
+                             <td>{{ data.new_kids }}</td>
+
+                     </tr>
+                {% endfor %}
+            </tbody>
+
+              {% else %}
+                  <p> There is no Data Here, please pick type </p>
+
+         {% endif %}
+
+       
+        
+      
+   </table>
+      <a href="{% url 'herd_simulator_view' %}" class="menu-button">Start another Simulation</a>
+        <!-- <a href="/" class="menu-button">Start another Simulation</a> -->
+
+        <a href="?pdf=true" target="_blank" class="menu-button">Download PDF</a>
+</body>
+
+{% endblock %}

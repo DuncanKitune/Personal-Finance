@@ -19,4 +19,22 @@ urlpatterns = [
     path('loan-armotization', views.loan_amortization_schedule, name='loan_amortization_schedule'),
     path('calculate-import-cost', views.calculate_import_cost, name='calculate_import_cost'),
     path('tax-calculator', views.tax_calculator, name='tax_calculator'),
+    
+    path('herd_simulator_view',views.herd_simulator_view, name='herd_simulator_view'),
+    path('simulation_results_view', views.simulation_results_view, name='simulation_results_view'),
+    path('simulation_results/<int:simulation_id>/', views.simulation_results_view, name='simulation_results'),
+    
+    path('goat_simulator_view', views.goat_simulator_view, name='goat_simulator_view'),
+    path('goat_simulation_results_view/', views.goat_simulation_results_view, name='goat_simulation_results'),
+    path('goat_simulation_results/<int:simulation_id>/', views.goat_simulation_results_view, name='goat_simulation_results'),
+    
+    path('chicken_simulator_view', views.chicken_simulator_view, name='chicken_simulator_view'),
+    path('chicken_simulation_results_view', views.chicken_simulation_results_view, name='chicken_simulation_results'),
+    path('chicken_simulation_results/<int:simulation_id>/', views.chicken_simulation_results_view, name='chicken_simulation_results'),
+    
+    # path('', views.simulation_view, name='simulation'), #only create method now to access to each link types
+
+    # path('results/<int:simulation_id>/', views.simulation_results_view, name = "simulation_results"),# also route as all simulation ids come into same route handler for common handling
+
+    # path('simulation_results_view', views.simulation_results_view, name='simulation_results_view')
 ]

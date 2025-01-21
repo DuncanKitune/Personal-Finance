@@ -19,6 +19,9 @@ h1 span{
     font-style: italic;
     font-size: 2rem;
 }
+hr{
+    color: #38761d;
+}
 h3{
     text-align: left;
     font-size: medium;
@@ -61,6 +64,16 @@ p{
 
     .menu-button:hover {
         background-color: #45a049;
+    }
+    
+    .tc{
+        text-decoration: none;
+        color: #4CAF50;                        
+    }
+    .tc:hover{
+        text-decoration: underline;
+        color: #45a049;  
+        background-color: white;                      
     }
 
 #footer {
@@ -124,11 +137,6 @@ p{
     font-size: 70%;
     }
 }
- body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            padding: 20px;
-        }
 
         form {
             background-color: #fff;
@@ -143,12 +151,6 @@ p{
             text-align: left;
             color: #4CAF50;
             margin-bottom: 20px;
-        }
-
-        p {
-            font-size: large;
-            font-style: normal;
-            color: gray;
         }
 
         .form-group {

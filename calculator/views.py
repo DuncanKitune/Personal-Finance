@@ -19,6 +19,13 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from django.shortcuts import render, redirect
+from .models import HerdSimulation, ChickenSimulation, GoatSimulation, Simulation
+from .forms import ChickenSimulationForm, GoatSimulationForm, SimulationForm
+from django.http import HttpResponse
+from investment_calculator.utils import render_to_pdf
+# single super type to manage our types with polymorphism. Used with super method logic of simulate, will redirect to other _simulate_ models types
+ # single form since model also single. Now easier as one way of doing thing with reusable method patterns
 # from weasyprint import WeasyTemplateResponseMixin, WeasyTemplateResponse
 
 # def calculate_future_value(request):
@@ -197,24 +204,130 @@ def net_worth_calculator(request):
 
     return render(request, 'calculator/net_worth_calculator.html')
 
-
-
-
 expense_categories = {
+    # Needs
     'Rent': 'Needs',
+    'Mortgage': 'Needs',
     'Groceries': 'Needs',
+    'Fruits': 'Needs',
+    'Vegetables': 'Needs',
+    'Meat': 'Needs',
+    'Grains': 'Needs',
+    'Dairy Products': 'Needs',
     'Utilities': 'Needs',
+    'Electricity': 'Needs',
+    'Gas': 'Needs',
+    'Water': 'Needs',
+    'Piped Water': 'Needs',
+    'Bottled Water': 'Needs',
+    'Mineral Water': 'Needs',
+    'Shopping': 'Needs',
+    'School Fees': 'Needs',
+    'Tuition Fees': 'Needs',
+    'Exam Fees': 'Needs',
+    'Books': 'Needs',
+    'Notebooks': 'Needs',
+    'Pens': 'Needs',
+    'Tithe': 'Needs',
+    'Church Sacrifices': 'Needs',
     'Transport': 'Needs',
-    'Insurance': 'Needs',
-    'Dining out': 'Wants',
-    'Clothing': 'Wants',
-    'Travel': 'Luxury',
-    'Gym membership': 'Wants',
-    'Entertainment': 'Wants',
+    'Bus Fare': 'Needs',
+    'Train Fare': 'Needs',
+    'Taxi Fare': 'Needs',
+    'Car Hire': 'Needs',
+    'Fuel': 'Needs',
+    'Public Transport Passes': 'Needs',
+    'Health Insurance Premiums': 'Needs',
+    'Medical Expenses': 'Needs',
+    'Prescriptions': 'Needs',
+    'Over-the-Counter Medicine': 'Needs',
+    'Health Checkups': 'Needs',
+    'Dental Care': 'Needs',
+    'Eyewear': 'Needs',
     'Savings': 'Savings & Investments',
     'Investments': 'Savings & Investments',
+    'Loans Repayment': 'Needs',
+    'Airtime': 'Needs',
+    'Mobile Data': 'Needs',
+    'Internet': 'Needs',
+    'Personal Pay': 'Needs',
+    'Personal Allowance': 'Needs',
+    'Clothing': 'Needs',
+    'Shoes': 'Needs',
+    'Suits': 'Needs',
+    'Underwear': 'Needs',
+    'Winter Clothes': 'Needs',
+    'Vehicle Maintenance': 'Needs',
+    'Vehicle Repairs': 'Needs',
+    'Vehicle Insurance': 'Needs',
+    'Childcare': 'Needs',
+    'Diapers': 'Needs',
+    'Baby Formula': 'Needs',
+    'Home Repairs': 'Needs',
+    'Household Cleaning Supplies': 'Needs',
+    'Pet Food': 'Needs',
+    'Pet Healthcare': 'Needs',
+    'Bank Fees': 'Needs',
+    'Taxes': 'Needs',
+
+    # Wants
+    'Church Offerings': 'Wants',
+    'Offerings': 'Wants',
+    'Dining Out': 'Wants',
+    'Takeout': 'Wants',
+    'Cafes': 'Wants',
+    'Gym Membership': 'Wants',
+    'Fitness Classes': 'Wants',
+    'Sports Equipment': 'Wants',
+    'Entertainment': 'Wants',
+    'Movies': 'Wants',
+    'Streaming Subscriptions': 'Wants',
+    'Music Subscriptions': 'Wants',
+    'Concert Tickets': 'Wants',
+    'Amusement Parks': 'Wants',
+    'Hobbies': 'Wants',
+    'Craft Supplies': 'Wants',
+    'Books (Leisure)': 'Wants',
+    'Magazines': 'Wants',
+    'Games': 'Wants',
+    'Vehicle Upgrades': 'Wants',
+    'Luxury Personal Items': 'Wants',
+    'Salaries & wages': 'Wants',
+    'Operating Costs': 'Wants',
+    'Business Costs': 'Wants',
+
+    # Luxury
+    'Travel': 'Luxury',
+    'Vacations': 'Luxury',
+    'Cruises': 'Luxury',
+    'Designer Clothing': 'Luxury',
+    'Luxury Watches': 'Luxury',
+    'Jewelry': 'Luxury',
+    'High-End Electronics': 'Luxury',
+    'Second Homes': 'Luxury',
+    'Yachts': 'Luxury',
+    'Private Jets': 'Luxury',
+
+    # Savings & Investments
+    'Emergency Fund': 'Savings & Investments',
+    'Stock Investments': 'Savings & Investments',
+    'Mutual Funds': 'Savings & Investments',
+    'Real Estate Investments': 'Savings & Investments',
+    'Retirement Savings': 'Savings & Investments',
+    'Side Hustle Investments': 'Savings & Investments',
+    'Education Savings': 'Savings & Investments',
+    'Debt Repayment (Above Minimum)': 'Savings & Investments',
+    'Shares': 'Savings & Investments',
+    'Debenture Shares': 'Savings & Investments',
+    'Sacco Savings': 'Savings & Investments',
+    'Fixed Savings': 'Savings & Investments',
+    'Apartments Purchase': 'Savings & Investments',
+    'Purchase of Apartments': 'Savings & Investments',
+    'Marketing, Sales & Advertising': 'Savings & Investments',
     # More expenses can be added here
 }
+
+
 
 # Predefined recommendations
 recommendations = {
@@ -257,12 +370,12 @@ def generate_recommendations(totals, income):
         insights.append(f"Your needs exceed the recommended 40% threshold. {recommendations['Needs'][0]}")
     if totals['Wants'] > income * 0.10:
         insights.append(f"Your wants exceed the recommended 10% threshold. {recommendations['Wants'][0]}")
-    if totals['Luxury'] > 0:
+    if totals['Luxury'] > income * 0.10:
         insights.append(f"Luxury expenses should be minimized. {recommendations['Luxury'][0]}")
     if rent_percentage > 25:
         insights.append("Your rent is more than 25% of your income. You may be living above your means.")
-    if totals['Savings & Investments'] < income * 0.50:
-        insights.append(f"Your savings & investments are less than the recommended 50%. {recommendations['Savings & Investments'][0]}")
+    if totals['Savings & Investments'] < income * 0.10:
+        insights.append(f"Your savings & investments are less than the minimum recommended of 10% - 50%. {recommendations['Savings & Investments'][0]}")
 
     # Additional insight if income exceeds expenditure or vice versa
     if income > total_expenses:
@@ -619,18 +732,187 @@ def feasibility_study(request):
         'cost_formset': cost_formset
     })
 
+def herd_simulator_view(request):
+    if request.method == 'POST':
+        initial_mothers = int(request.POST.get('initial_mothers', 10))  # default is 10 if missing
+        simulation_months = int(request.POST.get('simulation_months', 120)) # default 120 if missing
+
+        simulation = HerdSimulation(initial_mothers=initial_mothers, simulation_months=simulation_months)
+        simulation.simulate_herd()
+        return redirect('simulation_results', simulation_id=simulation.id)
+
+    return render(request, 'calculator/herd_simulator.html')  #Removed form context
+
+
+def goat_simulator_view(request):
+    if request.method == 'POST':
+        form = GoatSimulationForm(request.POST)
+        if form.is_valid():
+             simulation = form.save(commit=False);
+             simulation.simulate_goats();
+             return redirect('goat_simulation_results', simulation_id=simulation.id);
+    else:
+         form= GoatSimulationForm()
+
+    return render(request,'calculator/goat_simulator.html', {'form':form});
+
+def goat_simulator_view(request):
+    if request.method == 'POST':
+        form = GoatSimulationForm(request.POST)
+        if form.is_valid():
+             simulation = form.save(commit=False);
+             simulation.simulate_goats();
+             return redirect('goat_simulation_results', simulation_id=simulation.id);
+    else:
+         form= GoatSimulationForm()
+
+    return render(request,'calculator/goat_simulator.html', {'form':form});
+
+def goat_simulation_results_view(request, simulation_id):
+    simulation=GoatSimulation.objects.get(pk = simulation_id);  #ensure Goat Simulation Model
+    results=simulation.simulation_results;
+
+    context= {'results': results, 'simulation_id':simulation_id};
+
+    if 'pdf' in request.GET:
+       pdf = render_to_pdf('calculator/goat_simulation_results.html', context);
+       if pdf:
+           response = HttpResponse(pdf, content_type='application/pdf')
+           response['Content-Disposition'] = 'attachment;filename="goat_results.pdf"'
+           return response;
+       else:
+           return HttpResponse("Error Generating PDF",status=500);
+
+    return render(request,'calculator/goat_simulation_results.html',context);
+
+def chicken_simulator_view(request):
+   if request.method == 'POST':
+       form = ChickenSimulationForm(request.POST)
+       if form.is_valid():
+           simulation = form.save(commit=False)
+           simulation.simulate_chickens()
+           return redirect('chicken_simulation_results', simulation_id=simulation.id)
+   else:
+       form = ChickenSimulationForm()
+   return render(request, 'calculator/chicken_simulator.html', {'form': form})
+
+
+def chicken_simulation_results_view(request, simulation_id):
+   simulation = ChickenSimulation.objects.get(pk=simulation_id)  #Now Chicken simulation here
+   results = simulation.simulation_results
+
+   context={'results': results, 'simulation_id':simulation_id}
+   if 'pdf' in request.GET:
+       pdf= render_to_pdf('calculator/chicken_simulation_results.html',context)
+       if pdf:
+            response = HttpResponse(pdf,content_type = 'application/pdf');
+            response['Content-Disposition']='attachment;filename="chicken_results.pdf"'
+            return response
+       else:
+          return HttpResponse("Error Generating PDF", status = 500)
+
+   return render(request, 'calculator/chicken_simulation_results.html', context)
+
+def herd_simulator_view(request):
+    if request.method == 'POST':
+        form = SimulationForm(request.POST)
+        if form.is_valid():
+            simulation = form.save(commit=False)
+            simulation.simulate_herd()
+            return redirect('simulation_results', simulation_id=simulation.id)
+    else:
+        form = SimulationForm()
+
+    return render(request, 'calculator/herd_simulator.html', {'form': form})
+
+
+def simulation_results_view(request, simulation_id):
+    simulation = HerdSimulation.objects.get(pk=simulation_id)
+    results = simulation.simulation_results
+    context= {'results': results, 'simulation_id':simulation_id}
+
+    if 'pdf' in request.GET:
+      pdf= render_to_pdf('calculator/simulation_results.html',context)
+      if pdf:
+         response=HttpResponse(pdf, content_type='application/pdf')
+         response['Content-Disposition']='attachment;filename="herd_results.pdf"'
+         return response
+      else:
+            return HttpResponse("Error Generating PDF", status = 500)
+
+
+    return render(request, 'calculator/simulation_results.html',context)
+
+
+# def simulation_view(request): # handles the creation of types and form data display with redirect upon submission
+
+#     if request.method =="POST":
+#         form = SimulationForm(request.POST)
+#         if form.is_valid():
+#              simulation = form.save(commit = False); # create objects
+#              simulation.simulate() # redirect method to all types logic from one central spot. Reduces logic needed here
+#              return redirect('simulation_results', simulation_id = simulation.id) # only parameter on redirect
+#     else:
+#         form= SimulationForm();
+
+#     return render(request, 'calculator/simulation_form.html',{'form':form}); # same html but it changes display behavior based on object type values
+
+
+# def simulation_results_view(request, simulation_id):
+#     simulation = Simulation.objects.get(pk = simulation_id)
+#     results = simulation.simulation_results;
+#     context={'results': results, 'simulation_id': simulation_id , 'simulation_type': simulation.simulation_type};# using object type rather than type
+#   # conditional rendering based on object for results page
+
+#     template = "calculator/simulation_results.html"; #generic all html all types now render in similar view style that checks context for what types should output different tables on render, but all route to the same type now for easy to reuse components with same styling patterns (ex button). All specific results details are filtered by different model types data on all result pages since type was specified on models
+
+#     if 'pdf' in request.GET:
+#            pdf = render_to_pdf(template,context);
+#            if pdf:
+#                response = HttpResponse(pdf,content_type = 'application/pdf');
+    #            response['Content-Disposition']='attachment;filename="simulation_results.pdf"'
+    #            return response;
+    #        else:
+    #           return HttpResponse("Error generating PDF", status = 500) # render the correct file through `results` with `type` for conditional template
+
+    # return render(request, template , context ); # render to specified model name such that output to html specific pages work as well as pdf export view (only 2 calls which now becomes consistent among models since it checks the simulation data)
+
+
+
+#  Handle request result outputs type values from simulation database
+# def simulation_results_view(request, simulation_id):
+
+#           simulation = Simulation.objects.get(pk = simulation_id)
+#           results = simulation.simulation_results;
+#           context={'results': results, 'simulation_id': simulation_id , 'simulation_type': simulation.simulation_type};
+
+         
+#           template = "calculator/simulation_results.html";
+
+#           if 'pdf' in request.GET:
+#                   pdf = render_to_pdf(template,context);
+#                   if pdf:
+#                         response = HttpResponse(pdf,content_type = 'application/pdf');
+#                         response['Content-Disposition']='attachment;filename="simulation_results.pdf"'
+#                         return response;
+#                   else:
+#                         return HttpResponse("Error generating PDF", status = 500)
+      
+#           return render(request, template , context );
 
 def exponential_growth(request):
     if request.method == 'POST':
         try:
             # Get the input values from the form
-            investment_name = forms.CharField(label="Investment Name", max_length=100)
+            investment_name = request.POST.get ('investment_name', '').strip()
+            
+            # investment_name = forms.CharField(label="investment_name", max_length=100)
             initial_amount = float(request.POST.get('initial_amount'))
             growth_rate = float(request.POST.get('growth_rate'))
             time = float(request.POST.get('time'))
 
             # Calculate exponential growth
-            result = initial_amount * math.exp(growth_rate * time)
+            result = initial_amount * math.exp(growth_rate/100 * time)
             
             # Round the result to 2 decimal places for display
             result = round(result, 2)
@@ -911,10 +1193,14 @@ def calculate_statutory_deductions(income, additional_income=0):
     additional_income = Decimal(additional_income)
     # Sample values for deductions, you should use real values as per current Kenyan tax regulations
     PAYE = Decimal(income + additional_income) *Decimal(0.3)  # Example 30% PAYE rate
-    NHIF = Decimal(500.00)  # Fixed amount for NHIF, adjust per current rates
-    NSSF = Decimal(200.00)  # Fixed amount for NSSF, adjust per current rates
-    
-    total_deductions = PAYE + NHIF + NSSF
+    NHIF = Decimal((income + additional_income)*0.0275)  # Adjust per current rates
+    HL = Decimal(income + additional_income)* Decimal(0.015)  # Adjust per current rates
+    NSSF = Decimal(200.00)  # Adjust per current rates
+    Personal_relief = Decimal(2400)
+    Insuarance_relief = Decimal(NHIF)*Decimal(0.015)
+    HL_relief = Decimal(HL) *Decimal(.15)
+
+    total_deductions = PAYE + NHIF + HL + NSSF - (Personal_relief + Insuarance_relief + HL_relief)
     return {'PAYE': PAYE, 'NHIF': NHIF, 'NSSF': NSSF, 'total_deductions': total_deductions}
 
 def calculate_business_tax(income_bracket):
@@ -969,7 +1255,7 @@ def tax_calculator(request):
         employment_form = EmploymentForm()
         business_form = BusinessForm()
 
-    return render(request, 'calculator/tax_calculator.html', {'employment_form': employment_form, 'business_form': business_form})
+    return render(request, 'calculator/tax_payslip.html', {'employment_form': employment_form, 'business_form': business_form})
 
 # def net_worth_calculator(request):
 #     if request.method == 'POST':

@@ -1,23 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Tax Advice</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        .container {
-            width: 50%;
-            margin: auto;
-            text-align: center;
-        }
-        h1 {
-            color: #4CAF50;
-        }
-    </style>
-</head>
+{% extends 'base.html'}
+{% block content %}
 <body>
     <div class="container">
         <h1>Business Tax Advice</h1>
@@ -25,4 +7,5 @@
         <p>{{ tax_info.advice }}</p>
     </div>
 </body>
+{% endblock %}
 </html>

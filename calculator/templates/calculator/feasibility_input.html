@@ -1,65 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
+{% block content %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feasibility Study</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            padding: 20px;
-        }
+<style>
         .container {
-            max-width: 800px;
+            max-width: 100%;
             margin: 0 auto;
             background-color: white;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-
-        form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            max-width: 900px;
-            margin: 0 auto;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            text-align: left;
-            color: #333;
-        }
-        h2{
-            text-align: left;
-            font-size: medium;
-            color: #4CAF50;
-            padding: auto;
-            margin: auto;
-        }
-        p{
-        font-size: smaller;
-        font-style: normal;
-        color: gray;
-        }
-        .a{
-            color: #4CAF50;
-            text-decoration: none;
-        }
-        .a:hover{
-            color: #38761d;
-            text-decoration: wavy;
-            cursor: pointer;
-
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
         label {
             font-weight: bold;
             color: #333;
@@ -67,22 +17,19 @@
 
         input[type="text"],
         input[type="number"] {
-            width: calc(100% - 150px); /* Leave space for the label */
+            width: calc(100% - 10px); /* Leave space for the label */
             padding: 10px;
             border-radius: 5px;
             border: 1px solid #ddd;
         }
-
         .form-row {
             display: flex;
             align-items: center;
             margin-bottom: 15px;
         }
-
         .form-row label {
             width: 150px;
         }
-
         button {
             display: block;
             width: 100%;
@@ -95,17 +42,14 @@
             cursor: pointer;
             margin-top: 20px;
         }
-
         button:hover {
             background-color: #218838;
         }
-
         .add-item-btn {
             background-color: #45a049;
             color: white;
             margin-top: 10px;
         }
-
         .investment-option-item,
         .operating-cost-item {
             background-color: #f9f9f9;
@@ -114,186 +58,92 @@
             border-radius: 5px;
             border: 1px solid #ddd;
         }
-
-        h3,
-        h4 {
-            color: #4CAF50;
-            margin-bottom: 15px;
-        }
-
         .radio-group {
             display: flex;
             justify-content: space-between;
             margin: 10px 0;
         }
-
         .radio-group input {
             margin-right: 5px;
         }
-        #footer {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between; /* This will space the footer items evenly */
-        align-items: center; /* Aligns items vertically in the center */
-        background-color: #38761d; /* Green background */
-        color: white; /* Text color set to white */
-        padding: 10px; /* Adds padding inside the footer */
-        font-size: medium;
-    }
-    .footer{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        position: relative;
-        height: 2rem;
-    }
-    .footer li{
-        color: white;
-        font-size: small;
-        text-decoration: none;
-        list-style: none;
-    }
-    .footer ul{
-        padding: 0;
-        margin: 0;
-    }
-    .footer a {
-        font-size: small;
-        color: white;
-        text-decoration: none;
-    } 
-    @media(max-width: 768px){
-        .button-container{
-        max-height: 150px;
-        max-width: 250px;
-        flex-wrap: wrap;
-        overflow: hidden;
-        overflow-y: scroll;
-        padding: auto;
-        margin: auto;
-        }
-    }
-    @media(max-width: 768px){
-        .footer a{
-        gap: auto;
-        flex-wrap: wrap;
-        font-size: 80%;
-        }
-    }
-    @media(max-width: 768px){
-        h1 span{
-        font-size: 50%;
-        }
-    }
-    @media(max-width: 768px){
-        p{
-        font-size: 70%;
-        }
-    }
-    </style>
-</head>
-
+</style>
 <body>
-    <a  href="{% url 'main_menu' %}" class="a">Home</a><br>
-    <h1>Feasibility Study</h1>
+    <h2>Feasibility Study</h2>
+        <p><strong>What is a feasibility study?</strong> A feasibility study is your compass for navigating the uncharted waters of new projects.</p>
+        <p>It's a deep dive into the viability of an idea, assessing it's financial, operational, and technical feasibility. By examining costs, potential returns, and risks, you'll gain a clear understanding of whether your vision is a dream or a blueprint for success. 
+        <p>It's like building a bridge before crossing it - ensuring that your investment leads to a rewarding destination.</p>
+        <H3>Investment option</H3>
+        <div class="container">
+            <form method="post">
+                {% csrf_token %}
 
-    <div class="container">
-        <p><strong>What is a feasibility study?</strong> A feasibility study is your compass for navigating the uncharted waters of new projects. It's a deep dive into the viability of an idea, assessing its financial, operational, and technical feasibility. By examining costs, potential returns, and risks, you'll gain a clear understanding of whether your vision is a dream or a blueprint for success. It's like building a bridge before crossing it - ensuring that your investment leads to a rewarding destination."</p>
-        
-        <form method="post">
-            {% csrf_token %}
+                <!-- <h3>Investment Options</h3> -->
+                    <div id="investment-options">
+                        <!-- {% for form in investment_formset %}
+                        <div class="investment-option-item"> -->
+                            <!-- {{ form.as_p }} -->
 
-            <h3>Investment Options</h3>
-            <div id="investment-options">
-                <!-- {% for form in investment_formset %}
-                <div class="investment-option-item"> -->
-                    <!-- {{ form.as_p }} -->
-
-                    <div class="form-row">
-                        <label for="id_investment_name">Investment Name:</label>
-                        <input type="text" id="id_investment_name" name="investment_name" placeholder="Enter the name of the investment">
-                    </div>
-                    <div class="form-row">
-                        <label for="id_purchase_cost">Purchase Cost:</label>
-                        <input type="number" id="id_purchase_cost" name="purchase_cost" placeholder="Cost of purchasing the asset">
-                    </div>
-                    <div class="form-row">
-                        <label for="id_direct_income">Direct Income:</label>
-                        <input type="number" id="id_direct_income" name="direct_income" placeholder="Income directly generated by the asset">
-                    </div>
-                    <div class="form-row">
-                        <label for="id_indirect_income">Indirect Income:</label>
-                        <input type="number" id="id_indirect_income" name="indirect_income" placeholder="Savings or additional income generated">
-                    </div>
-
-                    <h4>Operating Costs</h4>
-                    <div id="operating-costs-{{ forloop.counter }}">
                         <div class="form-row">
-                            <label for="id_wear_tear">Wear and Tear:</label>
-                            <input type="number" id="id_wear_tear" name="wear_tear" placeholder="Estimated cost maintenance / wear and tear">
+                            <label for="id_investment_name">Investment Name:</label>
+                            <input type="text" id="id_investment_name" name="investment_name" placeholder="Enter the name of the investment">
                         </div>
                         <div class="form-row">
-                            <label for="id_spare_parts">Spare Parts:</label>
-                            <input type="number" id="id_spare_parts" name="spare_parts" placeholder="Cost of spare parts">
+                            <label for="id_purchase_cost">Purchase Cost:</label>
+                            <input type="number" id="id_purchase_cost" name="purchase_cost" placeholder="Cost of purchasing the asset">
                         </div>
                         <div class="form-row">
-                            <label for="id_fuel_electricity">Fuel/Electricity:</label>
-                            <input type="number" id="id_fuel_electricity" name="fuel_electricity" placeholder="Fuel or electricity costs">
+                            <label for="id_direct_income">Direct Income:</label>
+                            <input type="number" id="id_direct_income" name="direct_income" placeholder="Income directly generated by the asset">
                         </div>
                         <div class="form-row">
-                            <label for="id_manpower_costs">Manpower Costs:</label>
-                            <input type="number" id="id_manpower_costs" name="manpower_costs" placeholder="Labor or manpower costs">
+                            <label for="id_indirect_income">Indirect Income:</label>
+                            <input type="number" id="id_indirect_income" name="indirect_income" placeholder="Savings or additional income generated">
                         </div>
-                        <div class="form-row">
-                            <label for="id_depreciation">Depreciation:</label>
-                            <input type="number" id="id_depreciation" name="depreciation" placeholder="Asset depreciation costs">
-                        </div>
-                    </div>
 
-                    <button type="button" class="add-item-btn" data-id="{{ forloop.counter }}">Add Additional Operating Cost</button>
-                </div>
+                        <h4>Enter the Investment's Operating Costs</h4>
+                        <div id="operating-costs-{{ forloop.counter }}">
+                            <div class="form-row">
+                                <label for="id_wear_tear"></label>
+                                <input type="number" id="id_wear_tear" name="wear_tear" placeholder="Estimated cost maintenance / wear and tear">
+                            </div>
+                            <div class="form-row">
+                                <label for="id_spare_parts"></label>
+                                <input type="number" id="id_spare_parts" name="spare_parts" placeholder="Cost of spare parts">
+                            </div>
+                            <div class="form-row">
+                                <label for="id_fuel_electricity"></label>
+                                <input type="number" id="id_fuel_electricity" name="fuel_electricity" placeholder="Fuel or electricity costs">
+                            </div>
+                            <div class="form-row">
+                                <label for="id_manpower_costs"></label>
+                                <input type="number" id="id_manpower_costs" name="manpower_costs" placeholder="Labor or manpower costs">
+                            </div>
+                            <div class="form-row">
+                                <label for="id_depreciation"></label>
+                                <input type="number" id="id_depreciation" name="depreciation" placeholder="Asset depreciation costs">
+                            </div>
+                        </div>
+
+                        <button type="button" class="add-item-btn" data-id="{{ forloop.counter }}">Add Additional Operating Cost</button>
+                    </div>
                 {% endfor %}
-            
+                <button type="button" id="add-investment" class="add-item-btn">Add Another Investment Option</button>
 
-            <button type="button" id="add-investment" class="add-item-btn">Add Investment Option</button>
-
-            <h4>Choose Formula</h4>
-            <div class="form-group">
-                <div class="radio-group">
-                    <input type="radio" name="formula" id="formula_npv" value="npv" checked>
-                    <label for="formula_npv">Net Present Value (NPV)</label>
+                <h4>Choose Formula</h4>
+                    <div class="form-group">
+                        <div class="radio-group">
+                            <input type="radio" name="formula" id="formula_npv" value="npv" checked>
+                            <label for="formula_npv">Net Present Value (NPV)</label>
+                    </div>
+                    <div class="radio-group">
+                        <input type="radio" name="formula" id="formula_eac" value="eac">
+                        <label for="formula_eac">Equivalent Annual Cost (EAC)</label>
+                    </div>
                 </div>
-                <div class="radio-group">
-                    <input type="radio" name="formula" id="formula_eac" value="eac">
-                    <label for="formula_eac">Equivalent Annual Cost (EAC)</label>
-                </div>
-                
-            </div>
-
-            <button type="submit">Calculate Feasibility</button>
-        </form>
-    </div>    
+                <button type="submit">Calculate Feasibility</button>
+            </form>
+        </div>
 </body>
-<br><br><br><br><br><br>
-<footer>
-    <section id="footer">
-        <div class="footer">
-                <ul><li><a href="" target="_blank" noopener="" class=""> <b>Powered by:</b></a></li> </ul></div>
-        <div class="footer">
-                <ul><li><a href="https://portfolio-duncan-kitune.netlify.app/" target="_blank" noopener="" class=""> <b></b> Dev Code Universe, KE </a></li> </ul></div>        
-        <div class="footer">
-                <ul><li><a href="#" target="_blank" noopener="" class="">and</a></li> </ul></div>
-        <div class="footer">
-                <ul><li><a href="https://consultingafrica.netlify.app/" target="_blank" noopener="" class=""> <b></b> DKC Consulting Africa </a></li> </ul></div>
-        <div class="footer">
-                <ul><li><a href="{% url 'terms_conditions' %}" target="_blank" noopener="" class=""> <b></b> T&C </a></li> </ul></div>
-        <div class="footer"> 
-                <ul><li>&copy; 2024</li></ul></div>
-        <div class="footer">
-            <ul><li><a href="tel:+254720984457" target="_blank">Tel: +254 720 98 44 57 / 733 98 44 57 </a></li></ul></div>
-    </section>
-</footer>
     <script>
         const addInvestmentBtn = document.getElementById('add-investment');
         const investmentOptionsContainer = document.getElementById('investment-options');
@@ -356,4 +206,5 @@
             investmentOptionsContainer.insertAdjacentHTML('beforeend', newInvestmentFormHtml);
         });
     </script>
+    {% endblock %}
 </html>
