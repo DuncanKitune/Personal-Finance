@@ -2,21 +2,24 @@
 {% block content %}
 <body>
     {% csrf_token %}
-    
+    <p>You don't have an accounting, financial or economics background? <b>No Problem! No Need to Worry!</b></p>
+        <p>We help you simplify your finances, make smart decisions and achieve your financial goals effortlessly.</p>
+        
     <p><strong>Personal finances involve mastering:</strong></p>
-        <p><b>Future Values of Investments</b> (Compound Interest, Annuity Interest, Time value of money),<strong> Budgeting and Spending</strong> (Tracking expenses, Setting realistic goals), <strong> Debt Management</strong> (Credit cards, Student loans, Bank/ SACCO loans, etc), <strong> Investing </strong> (Risk tolerance, Diversification, etc), <strong> Retirement Planning</strong> (Saving enough, Investment strategy), <strong>Estate Planning</strong> (Insurance, Trusts, etc.),<strong> Taxes</strong> (Tax laws, Tax planning, etc), <strong> Financial Literacy</strong> (Basic concepts, Decision-making, etc)  </p>
+        <p><strong> Financial Literacy</strong> (Basic concepts, Decision-making, etc), <strong> Budgeting and Spending</strong> (Tracking expenses, Setting realistic goals), <strong> Debt Management</strong> (Credit cards, Student loans, Bank/ SACCO loans, etc), <strong> Investing </strong> (Risk tolerance, Diversification, etc), <strong> Retirement Planning</strong> (Saving enough, Investment strategy), <b>Future Values of Investments</b> (Compound Interest, Annuity Interest, Time value of money), <strong>Estate Planning</strong> (Insurance, Trusts, etc.),<strong> Taxes</strong> (Tax laws, Tax planning, etc)</p>
     <br>
     <h3>Select an option for assistance:</h3>
 
     <div class="button-container">
-        <a class="menu-button" href="{% url 'net_worth_calculator' %}">Networth Calculator</a>
+        
         <a class="menu-button" href="{% url 'compound_interest' %}">Compound Interest Calculator</a>
         <a class="menu-button" href="{% url 'calculate_future_value' %}">Annuity Interest Calculator</a>
         <a class="menu-button" href="{% url 'exponential_growth' %}">Exponential Growth Calculator</a>
         <a class="menu-button" href="{% url 'calculate_principle' %}">Savings Instalments Calculator</a>
         <a class="menu-button" href="{% url 'personal_budget' %}">Budgeting & Cashflow</a>
         
-        <a class="menu-button" href="{% url 'retirement_planner' %}">Retirement Planner</a>        
+        <a class="menu-button" href="{% url 'retirement_planner' %}">Retirement Planner</a>     
+        <a class="menu-button" href="{% url 'net_worth_calculator' %}">Networth Calculator</a>   
         <a class="menu-button" href="{% url 'loan_amortization_schedule' %}">Loan Armotization Schedule</a>
         <a class="menu-button" href="{% url 'tax_calculator' %}">Tax Liabilities Manager</a>
         <a class="menu-button" href="{% url 'calculate_import_cost' %}">Car Import Duty Calculator</a>

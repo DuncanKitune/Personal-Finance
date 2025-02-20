@@ -1,29 +1,216 @@
-from django.shortcuts import render
-
-# Create your views here.
-from django.http import HttpResponse
-from django.http import JsonResponse
+from django.shortcuts import render, redirect
+from django.http import HttpResponse, JsonResponse
 import random
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
+from django import forms
 import io
+from io import BytesIO
+import math
+from decimal import Decimal
+from datetime import timedelta
 from django.contrib import messages
 from django.template.loader import render_to_string
-import math
-from io import BytesIO
 from django.core.files.storage import FileSystemStorage
-from weasyprint import HTML # Import necessary libraries for PDF generation
-from django import forms
-from decimal import Decimal
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.signals import user_logged_in
+from django.dispatch import receiver
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
-from django.shortcuts import render, redirect
-from .models import HerdSimulation, ChickenSimulation, GoatSimulation, Simulation
-from .forms import ChickenSimulationForm, GoatSimulationForm, SimulationForm
-from django.http import HttpResponse
+from weasyprint import HTML 
+from .models import HerdSimulation, ChickenSimulation, GoatSimulation, Simulation, UserSubscription, SubscriptionPlan
+from .forms import ChickenSimulationForm, GoatSimulationForm, SimulationForm, SubscriptionForm
 from investment_calculator.utils import render_to_pdf
+from .decorators import subscription_required
+from django.utils.timezone import now
+import stripe
+from django.conf import settings
+from django.shortcuts import render, redirect
+from .models import SubscriptionPlan, UserSubscription, User
+from django.utils.timezone import now, timedelta
+from datetime import timedelta
+stripe.api_key = settings.STRIPE_SECRET_KEY
+from celery import shared_task
+from django.core.mail import send_mail
+from django.contrib import messages
+from django.db.models import Count
+
+
+def admin_dashboard(request):
+    # Active and inactive subscriptions
+    active_subscriptions = UserSubscription.objects.filter(is_active=True).count()
+    inactive_subscriptions = UserSubscription.objects.filter(is_active=False).count()
+
+    # Subscriptions expiring soon
+    expiring_subscriptions = UserSubscription.objects.filter(
+        end_date__lte=now() + timedelta(days=7), is_active=True
+    )
+
+    # Total revenue
+    revenue = SubscriptionPlan.objects.annotate(
+        total_revenue=Count('usersubscription') * F('price')
+    ).aggregate(total_revenue=Sum('total_revenue'))['total_revenue']
+
+    # Subscription trends (last 30 days)
+    today = now().date()
+    last_30_days = today - timedelta(days=30)
+    subscription_trends = (
+        UserSubscription.objects.filter(start_date__gte=last_30_days)
+        .annotate(day=TruncDate('start_date'))
+        .values('day')
+        .annotate(count=Count('id'))
+        .order_by('day')
+    )
+
+    # New users in the last 30 days
+    new_users = User.objects.filter(date_joined__gte=last_30_days).count()
+
+    # Most popular plans
+    popular_plans = (
+        SubscriptionPlan.objects.annotate(subscriber_count=Count('usersubscription'))
+        .order_by('-subscriber_count')
+        .values('name', 'subscriber_count')[:5]
+    )
+
+    context = {
+        'active_subscriptions': active_subscriptions,
+        'inactive_subscriptions': inactive_subscriptions,
+        'expiring_subscriptions': expiring_subscriptions,
+        'revenue': revenue,
+        'expiring_count': expiring_subscriptions.count(),
+        'subscription_trends': subscription_trends,
+        'new_users': new_users,
+        'popular_plans': popular_plans,
+    }
+
+    return render(request, 'admin_dashboard.html', context)
+
+
+
+def analytics_view(request):
+    plans = SubscriptionPlan.objects.all().order_by('-subscribers')
+    return render(request, 'analytics.html', {'plans': plans})
+
+def alert_view(request):
+    user_subscription = UserSubscription.objects.get(user=request.user)
+    if user_subscription.end_date <= now() + timedelta(days=3):
+        messages.warning(request, 'Your subscription is expiring soon. Please renew.')
+    return render(request, 'dashboard.html')
+
+
+@shared_task
+def notify_expiring_subscriptions():
+    expiring_subscriptions = UserSubscription.objects.filter(
+        end_date__lte=now() + timedelta(days=3)
+    )
+    for subscription in expiring_subscriptions:
+        send_mail(
+            'Your Subscription is Expiring Soon',
+            'Your subscription is expiring in 3 days. Please renew it to continue enjoying our services.',
+            'noreply@yourdomain.com',
+            [subscription.user.email],
+        )
+
+
+def payment_cancel(request):
+    """
+    View to handle payment cancellation. 
+    Displays a message to the user and provides options to retry or contact support.
+    """
+    return render(request, 'payment_cancel.html', {})
+
+
+def payment_success(request):
+    # Get the session data from Stripe webhook or URL
+    user = request.user
+    plan = SubscriptionPlan.objects.get(name='Your Plan Name')  # Example: Fetch the plan purchased
+    plan.subscribers += 1
+    plan.save()
+    # Update subscription details
+    UserSubscription.objects.update_or_create(
+        user=user,
+        defaults={
+            'plan': plan,
+            'start_date': now(),
+            'end_date': now() + timedelta(days=plan.duration_days),
+            
+        }
+    )
+    return render(request, 'payment_success.html')
+
+
+def create_checkout_session(request, plan_id):
+    plan = SubscriptionPlan.objects.get(id=plan_id)
+
+    try:
+        # Create Stripe Checkout Session
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[
+                {
+                    'price_data': {
+                        'currency': 'usd',
+                        'product_data': {
+                            'name': plan.name,
+                        },
+                        'unit_amount': int(plan.price * 100),
+                    },
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',
+            success_url=request.build_absolute_uri('/payment-success/'),
+            cancel_url=request.build_absolute_uri('/payment-cancel/'),
+        )
+
+        return redirect(checkout_session.url, code=303)
+
+    except Exception as e:
+        return render(request, 'payment_error.html', {'error': str(e)})
+
+
+@receiver(user_logged_in)
+def check_subscription(sender, request, user, **kwargs):
+    subscription = UserSubscription.objects.filter(user=user).first()
+    if subscription and not subscription.is_active:
+        # Notify the user or redirect them to renew
+        return redirect('subscribe')
+
+
+@subscription_required
+def premium_content(request):
+    return render(request, 'calculator/premium_content.html')
+
+
+def subscribe(request):
+    if request.method == 'POST':
+        form = SubscriptionForm(request.POST)
+        if form.is_valid():
+            plan = form.cleaned_data['plan']
+            UserSubscription.objects.update_or_create(
+                user=request.user,
+                defaults={
+                    'plan': plan,
+                    'start_date': now(),
+                    'end_date': now() + timedelta(days=plan.duration_days),
+                }
+            )
+            return redirect('home')  # Redirect to homepage or relevant page
+    else:
+        form = SubscriptionForm()
+    return render(request, 'calculator/subscribe.html', {'form': form})
+
+
+def subscription_required(view_func):
+    def wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+        subscription = UserSubscription.objects.filter(user=request.user, end_date__gte=now()).first()
+        if not subscription or not subscription.is_active:
+            return redirect('subscribe')  # Redirect to subscription page
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
 # single super type to manage our types with polymorphism. Used with super method logic of simulate, will redirect to other _simulate_ models types
  # single form since model also single. Now easier as one way of doing thing with reusable method patterns
 # from weasyprint import WeasyTemplateResponseMixin, WeasyTemplateResponse
@@ -449,6 +636,8 @@ def personal_budget(request):
 
 
 # Views.py logic for risk calculations
+@subscription_required
+
 def risk_calculations(request):
     context = {}
     if request.method == 'POST':
@@ -660,7 +849,7 @@ def calculate_eac(npv, discount_rate, years):
     eac = npv / ((1 - (1 + discount_rate / 100) ** -years) / (discount_rate / 100))
     return eac
 
-
+@subscription_required
 def feasibility_study(request):
     # Create a formset for multiple operating costs
     OperatingCostFormSet = forms.formset_factory(OperatingCostForm, extra=0)  # No additional forms needed
@@ -870,12 +1059,12 @@ def simulation_results_view(request, simulation_id):
 #            pdf = render_to_pdf(template,context);
 #            if pdf:
 #                response = HttpResponse(pdf,content_type = 'application/pdf');
-    #            response['Content-Disposition']='attachment;filename="simulation_results.pdf"'
-    #            return response;
-    #        else:
-    #           return HttpResponse("Error generating PDF", status = 500) # render the correct file through `results` with `type` for conditional template
+#                response['Content-Disposition']='attachment;filename="simulation_results.pdf"'
+#                return response;
+#            else:
+#               return HttpResponse("Error generating PDF", status = 500) # render the correct file through `results` with `type` for conditional template
 
-    # return render(request, template , context ); # render to specified model name such that output to html specific pages work as well as pdf export view (only 2 calls which now becomes consistent among models since it checks the simulation data)
+#     return render(request, template , context ); # render to specified model name such that output to html specific pages work as well as pdf export view (only 2 calls which now becomes consistent among models since it checks the simulation data)
 
 
 
@@ -1207,12 +1396,12 @@ def calculate_business_tax(income_bracket):
     if income_bracket == '1m_20m':
         return {
             'tax': '15% of your income',
-            'advice': 'You are in the 1M - 20M income bracket. Your tax rate is 15%.'
+            'advice': 'You are in the 1M - 20M income bracket. Your are entitled to register for TOT at a rate of 3% of gross rvenue per month unless you are registered for VAT.'
         }
     else:
         return {
             'tax': '30% of your income',
-            'advice': 'You are in the Above 20M income bracket. Your tax rate is 30%.'
+            'advice': 'You are in the Above 20M income bracket. Your are supposed to pay corporate tax at a tax rate of 30% annually for residents on all net profit generated from your business operations and related activites .'
         }
 
 # Views

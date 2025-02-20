@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h1>Payment Cancelled</h1>
+    <p>It seems your payment was not completed. If this was an error, you can retry the payment or contact support for assistance.</p>
+    <div class="buttons">
+        <a href="{% url 'retry_payment' %}" class="button retry">Retry Payment</a>
+        <a href="{% url 'contact_support' %}" class="button">Contact Support</a>
+    </div>
+</div>
+
+{% endblock %}

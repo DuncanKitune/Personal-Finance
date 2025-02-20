@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Subscription Analytics Dashboard</h1>
+
+        <div class="stats">
+            <div class="stat-card">
+                <h2>Active Subscriptions</h2>
+                <p>{{ active_subscriptions }}</p>
+            </div>
+            <div class="stat-card">
+                <h2>Inactive Subscriptions</h2>
+                <p>{{ inactive_subscriptions }}</p>
+            </div>
+            <div class="stat-card">
+                <h2>Expiring Subscriptions (Next 7 Days)</h2>
+                <p>{{ expiring_count }}</p>
+            </div>
+            <div class="stat-card">
+                <h2>Total Revenue</h2>
+                <p>${{ revenue|floatformat:2 }}</p>
+            </div>
+            <div class="stat-card">
+                <h2>New Users (Last 30 Days)</h2>
+                <p>{{ new_users }}</p>
+            </div>
+        </div>
+
+        <div class="charts">
+            <div class="chart-container">
+                <h3>Subscription Trends (Last 30 Days)</h3>
+                <canvas id="trendChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <h3>Most Popular Plans</h3>
+                <canvas id="popularPlansChart"></canvas>
+            </div>
+        </div>
+
+        <script>
+            // Data for Subscription Trends Chart
+            const trendLabels = [
+                {% for trend in subscription_trends %}
+                "{{ trend.day }}",
+                {% endfor %}
+            ];
+            const trendData = [
+                {% for trend in subscription_trends %}
+                {{ trend.count }},
+                {% endfor %}
+            ];
+
+            const trendConfig = {
+                type: 'line',
+                data: {
+                    labels: trendLabels,
+                    datasets: [{
+                        label: 'New Subscriptions',
+                        data: trendData,
+                        borderColor: '#4caf50',
+                        tension: 0.4,
+                    }]
+                }
+            };
+            new Chart(document.getElementById('trendChart'), trendConfig);
+
+            // Data for Most Popular Plans Chart
+            const popularPlansLabels = [
+                {% for plan in popular_plans %}
+                "{{ plan.name }}",
+                {% endfor %}
+            ];
+            const popularPlansData = [
+                {% for plan in popular_plans %}
+                {{ plan.subscriber_count }},
+                {% endfor %}
+            ];
+
+            const popularPlansConfig = {
+                type: 'bar',
+                data: {
+                    labels: popularPlansLabels,
+                    datasets: [{
+                        label: 'Subscribers',
+                        data: popularPlansData,
+                        backgroundColor: ['#4caf50', '#2196f3', '#ff9800', '#f44336', '#9c27b0'],
+                    }]
+                }
+            };
+            new Chart(document.getElementById('popularPlansChart'), popularPlansConfig);
+        </script>
+    </div>
+
+    {% endblock %}

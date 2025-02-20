@@ -9,6 +9,7 @@
 
     <!-- Link to CSS file -->
     <link rel="stylesheet" href="{% static 'calculator/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
     <style>
     body {
         font-family: Arial, sans-serif;
@@ -34,17 +35,6 @@
     main{
         margin: 40px;
     }
-   
-    nav ul, li, a{
-        list-style: none;
-        text-align: center;
-        display: flex;
-        text-align: center;
-        flex-wrap: nowrap;
-        margin: auto;
-        padding: auto;
-        justify-content: space-between; 
-    }
     
     h1{
         text-align: center;
@@ -61,23 +51,35 @@
         font-style: italic;
         font-size: 2rem;
     }
+    nav ul, li, a{
+        list-style: none;
+        text-align: center;
+        display: flex;
+        text-align: center;
+        flex-wrap: nowrap;
+        margin: auto;
+        padding: auto;
+        justify-content: space-between; 
+        font-size: 1.2rem;
+    }
     h2 {
             text-align: center;
             color: #4CAF50;
+            font-size: 1.1rem;
         }
     hr{
         color: #38761d;
     }
     h3{
         
-        font-size: medium;
+        font-size: 1rem;
         color: #4CAF50;
         padding: auto;
         margin: auto;
         /* color: #4CAF50; */
     }
     p{
-        font-size: large;
+        font-size: .9rem;
         font-style: normal;
         color: gray;
     }
@@ -93,7 +95,7 @@
             justify-content: center;
             gap: 20px;
             margin-top: 50px;
-            height: 10rem;
+            height: 20rem;
             overflow: hidden;
             overflow-x: scroll;
             overflow-y: scroll;
@@ -120,15 +122,16 @@
         
         .tc{
             text-decoration: none;
-            color: #4CAF50;                        
+            color: #4CAF50; 
+            margin: auto;
+            padding-left: 40%;
+                                
         }
         .tc:hover{
             text-decoration: underline;
             color: #45a049;  
             background-color: white;                      
-        }
-        
-        
+        } 
         .a{
             color: #4CAF50;
             text-decoration: none;
@@ -139,6 +142,38 @@
             cursor: pointer;
 
         }
+        .stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 40px;
+}
+
+    .stat-card {
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        width: 200px;
+        text-align: center;
+    }
+
+    .stat-card h2 {
+        margin-bottom: 10px;
+        color: #555;
+    }
+
+    .stat-card p {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .chart-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
         form {
             display: flex;
             flex-wrap: wrap;
@@ -163,6 +198,9 @@
             width: 100%;
             padding: 8px;
             margin: 5px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            height: 2rem;
         }
         input[type="submit"] {
             background-color: #4CAF50;
@@ -222,27 +260,36 @@
         .results th {
             background-color: #f8f8f8;
         }
-        input[type="text"], input[type="number"] {
+        /* input[type="text"], input[type="number"] {
             width: 90%;
             padding: auto;
             font-size: 16px;
             border-radius: 6px;
             border: 1px solid #ccc;
             height: 2rem;
-        }
+        } */
+        
         .add-line-btn {
             margin: auto;
-            /* padding: auto; */
-            background-color: #4CAF50;
-            color: white;
-            border: none;
+            padding: auto;
+            background-color: white;
+            color: rgba(12, 11, 11, 0.87);
+            border:.1rem solid #4CAF50;
             border-radius: 4px;
             cursor: pointer;
             width: 50%;
             height: 1.5rem;
             align-self: center;
             display: flex;
-            font-size: 16px;
+            font-size: 1rem;
+            text-align: center;
+            align-items: center;
+        }
+        .add-line-btn :hover {
+            color: white;
+            }
+            .form-group {
+            margin-bottom: 20px;
         }
         .submit-btn {
             width: 100%;
@@ -292,9 +339,11 @@
             cursor: pointer;
         }
         table { 
-            width: 50%;
+            width: calc(100% - 20px);
+            /* width: 50%; */
             margin: 0 auto;
             border-collapse: collapse;
+            margin-bottom: 20px;
         }
 
         th, td {
@@ -313,8 +362,20 @@
             text-align: left;
         }
 
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
         a {
             text-decoration: none;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
         .add-btn, .submit-btn, .print-btn {
             background-color: #45a049;
@@ -329,253 +390,7 @@
         .add-btn:hover, .submit-btn:hover, .print-btn:hover {
             background-color: #38761d;
         }
-        .summary-box {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            max-width: 800px;
-            margin: auto;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        .recommendation {
-            background-color: #f9f9f9;
-            padding: 15px;
-            border-left: 5px solid #4CAF50;
-            font-size: 1.1rem;
-        }
-        
-        
-        #footer {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between; /* This will space the footer items evenly */
-            align-items: center; /* Aligns items vertically in the center */
-            background-color: #38761d; /* Green background */
-            color: white; /* Text color set to white */
-            padding: 10px; /* Adds padding inside the footer */
-            font-size: medium;
-        }
-        .footer{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            position: relative;
-            height: 2rem;
-        }
-        .footer li{
-            color: white;
-            font-size: small;
-            text-decoration: none;
-            list-style: none;
-        }
-        .footer ul{
-            padding: 0;
-            margin: 0;
-        }
-        .footer a {
-            font-size: small;
-            color: white;
-            text-decoration: none;
-        } 
-        
-        @media(max-width: 768px){
-            .button-container{
-            max-height: 150px;
-            max-width: 250px;
-            flex-wrap: wrap;
-            overflow: hidden;
-            overflow-y: scroll;
-            padding: auto;
-            margin: auto;
-            }
-        }
-        @media(max-width: 768px){
-            .footer a{
-            gap: auto;
-            flex-wrap: wrap;
-            font-size: 80%;
-            }
-        }
-        @media(max-width: 768px){
-            h1 span{
-            font-size: 50%;
-            }
-        }
-        @media(max-width: 768px){
-            p{
-            font-size: 70%;
-            }
-        }
-
-        @media(max-width: 768px){
-            table{
-            max-width: 100%;
-            padding: auto;
-            margin: auto;
-            }
-        }
-        @media(max-width: 768px){
-            .footer a{
-            gap: auto;
-            flex-wrap: wrap;
-            font-size: 80%;
-            }
-        }
-        @media(max-width: 768px){
-            .add-line-btn{
-            font-size: 80%;
-            flex-wrap: nowrap;
-            padding: auto;
-            margin: auto;
-            }
-        }
-        @media(max-width: 768px){
-            table{
-            /* font-size: 80%; */
-            flex-wrap: nowrap;
-            max-width: 100%;
-            padding: auto;
-            margin: auto;
-            }
-        }
-        @media(max-width: 768px){
-            table, th, td{
-            font-size: 1rem;
-            flex-wrap: nowrap;
-            max-width: 80%;
-            padding: auto;
-            margin: auto;
-            }
-        }
-        @media(max-width: 768px){
-            input[type="text"], input[type="number"]{
-            font-size: 1rem;
-            flex-wrap: nowrap;
-            max-width: 80%;
-            padding: auto;
-            margin: auto;
-            }
-        }
-        @media(max-width: 768px){
-            table{
-            max-width: 100%;
-            padding: auto;
-            margin: auto;
-            }
-        }
-        @media(max-width: 768px){
-            .footer a{
-            gap: auto;
-            flex-wrap: wrap;
-            font-size: 80%;
-            }
-        }
-        @media(max-width: 768px){
-            .add-line-btn{
-            font-size: 80%;
-            flex-wrap: nowrap;
-            padding: auto;
-            margin-left: 1rem;
-            width: 95%;
-            }
-        }
-        @media(max-width: 768px){
-            table{
-            /* font-size: 80%; */
-            flex-wrap: nowrap;
-            width: 95%;
-            padding: 1rem;
-            margin-left: 1rem;
-            }
-        }
-        @media(max-width: 768px){
-            th, td{
-            font-size: 1rem;
-            flex-wrap: nowrap;
-            /* width: 95%; */
-            padding: auto;
-            margin: auto;
-            }
-        }
-        @media(max-width: 768px){
-            input[type="text"], input[type="number"]{
-            font-size: 1rem;
-            flex-wrap: nowrap;
-            width: 95%;
-          
-            }
-        }
-        @media(max-width: 768px){
-            .button-container{
-            max-height: 150px;
-            max-width: 250px;
-            flex-wrap: wrap;
-            overflow: hidden;
-            overflow-y: scroll;
-            padding: auto;
-            margin: auto;
-            }
-        }
-        @media(max-width: 768px){
-            .footer a{
-            gap: auto;
-            flex-wrap: wrap;
-            font-size: 80%;
-            }
-        }
-        @media(max-width: 768px){
-            h1 span{
-            font-size: 50%;
-            }
-        }
-        @media(max-width: 768px){
-            p{
-            font-size: 70%;
-            }
-        }
-        .add-line-btn {
-            margin: auto;
-            padding: auto;
-            background-color: white;
-            color: rgba(12, 11, 11, 0.87);
-            border:.1rem solid #4CAF50;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 50%;
-            height: 1.5rem;
-            align-self: center;
-            display: flex;
-            font-size: 1rem;
-            text-align: center;
-            align-items: center;
-        }
-        .add-line-btn :hover {
-            color: white;
-            }
-            .form-group {
-            margin-bottom: 20px;
-        }
+ 
         .form-row {
             display: flex;
             align-items: center;
@@ -607,7 +422,6 @@
             height: 1.5rem;
             background-color: #218838;
             color: white;
-            margin: auto;
             padding: auto;
             border: .1rem solid #333;
         }
@@ -616,6 +430,148 @@
             color: white;
             cursor: pointer;
         }
+        .summary-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: auto;
+        }
+        .plan {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 10px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .plan h3 {
+            color: #4CAF50;
+        }
+        .plan button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .plan button:hover {
+            background-color: #45a049;
+        }
+        .recommendation {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-left: 5px solid #4CAF50;
+            font-size: 1.1rem;
+        } 
+        #footer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between; /* This will space the footer items evenly */
+            align-items: center; /* Aligns items vertically in the center */
+            background-color: #38761d; /* Green background */
+            color: white; /* Text color set to white */
+            padding: 10px; /* Adds padding inside the footer */
+            font-size: medium;
+        }
+        .footer{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            position: relative;
+            height: 2rem;
+        }
+        .footer li{
+            color: white;
+            font-size: small;
+            text-decoration: none;
+            list-style: none;
+        }
+        .footer ul{
+            padding: 0;
+            margin: 0;
+        }
+        .footer a {
+            font-size: small;
+            gap: auto;
+            flex-wrap: wrap;
+            color: white;
+            text-decoration: none;
+        } 
+        
+        @media(max-width: 768px){
+            .button-container{
+            max-height: 100%; 
+            min-width:100%; 
+           
+            }
+        .menu-button {
+            font-size: 80%;
+            font-display: center;
+            align-items: center;
+            width: 25%;
+            height: 25%;
+            margin: .1rem;
+            padding: .3rem;
+        }
+        }
+        @media(max-width: 768px){
+            .footer a{
+            gap: auto;
+            flex-wrap: wrap;
+            font-size: 80%;
+            }
+        }
+        @media(max-width: 768px){
+            h1 span{
+            font-size: 50%;
+            }
+        }
+        @media(max-width: 768px){
+            p{
+            font-size: 80%;
+            }
+        }
+
+        @media(max-width: 768px){
+            table{
+            max-width: 100%;
+            padding: auto;
+            margin: auto;
+            }
+        }
+       
+        @media(max-width: 768px){
+            table{
+            /* font-size: 80%; */
+            flex-wrap: nowrap;
+            max-width: 100%;
+            padding: auto;
+            margin: auto;
+            }
+        }
+        @media(max-width: 768px){
+            th, td{
+            font-size: 80%;
+            flex-wrap: nowrap;
+            max-width: 100%;
+            padding: auto;
+            margin: auto;
+            }
+        }
+        @media(max-width: 768px){
+            input[type="text"], input[type="number"]{
+            font-size: 1rem;
+            flex-wrap: nowrap;
+            max-width: 80%;
+            padding: auto;
+            margin: auto;
+            }
+        }
+       
+   
     </style>
 </head>
 <body>
@@ -625,13 +581,13 @@
         <nav>
             <ul>
                 <li><h3><a href="{% url 'main_menu' %}" class="a">Home</a><br></h3> </li>
+                <li><h3><a href="./calculator/Asante_AI.html" class="a">ASK AI</a><br></h3> </li>
+                <li><h3><a href="#contacts" class="a">School Maths</a><br></h3> </li>
                 <li><h3><a href="#contacts" class="a">Contacts</a><br></h3> </li>
             </ul>
         </nav>
     </header>
     <main>
-        <p>You don't have an accounting, financial or economics background? <b>No Problem! No Need to Worry!</b></p>
-        <p>We help you simplify your finances, make smart decisions and achieve your financial goals effortlessly.</p>
     
         {% block content %}{% endblock %}
     </main>

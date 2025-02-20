@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<head>
+    <title>Subscribe</title>
+</head>
+<body>
+    <h1>Choose Your Subscription Plan</h1>
+    <div class="plans">
+        {% for plan in plans %}
+        <div class="plan">
+            <h3>{{ plan.name }}</h3>
+            <p>{{ plan.description }}</p>
+            <p>Price: ${{ plan.price }}</p>
+            <button onclick="location.href='{% url 'checkout' plan.id %}'">Subscribe</button>
+        </div>
+        {% endfor %}
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Subscribe</button>
+    </form>
+
+
+{% endblock %}

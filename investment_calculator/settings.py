@@ -46,9 +46,11 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'calculator.middleware.SubscriptionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -101,6 +103,13 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Example: Redis as the broker
+
+
+STRIPE_PUBLIC_KEY = 'your_stripe_public_key'
+STRIPE_SECRET_KEY = 'your_stripe_secret_key'
+STRIPE_WEBHOOK_SECRET = 'your_stripe_webhook_secret'
 
 
 # Internationalization

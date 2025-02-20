@@ -9,52 +9,51 @@
     
     <div class="container">
         <h2>Start Simulation</h2>
-            <h3>Choose the specified model or fill in the details to use the general model</h3>
-                <a class="menu-button" href="{% url 'herd_simulator_view' %}">Dairy Cows</a>
-            
-                <a class="menu-button" href="{% url 'chicken_simulator_view' %}">Chicken</a>
+            <form>
+                <h3>Choose the specified model or fill in the details to use the general model</h3>
+                    <a class="menu-button" href="{% url 'herd_simulator_view' %}">Dairy Cows</a>
+                
+                    <a class="menu-button" href="{% url 'chicken_simulator_view' %}">Chicken</a>
 
-                <a class="menu-button" href="{% url 'goat_simulator_view' %}">Goats</a>         
-            
-                <form method="get" action="{% url 'simulation' %}">
-                <button type="submit" name="simulation_type" value="herd">Dairy Cows</button>
-                <button type="submit" name="simulation_type" value="chicken">Chicken</button>
-                <button type="submit" name="simulation_type" value="goat">Goats</button>
+                    <a class="menu-button" href="{% url 'goat_simulator_view' %}">Goats</a>         
             </form>
             
-        <form method="post">
+        <!-- <form method="post">
             {% csrf_token %}
             <input type="hidden" name="simulation_type" id="simulation_type" value="{{ request.GET.simulation_type }}">
             {{ form.as_p }}  
-         <button type="submit">Simulate</button>
-        </form>
-            {% csrf_token %}
-            <label for="investment_name">Name of your Product:</label>
-            <input type="text" id="investment_name" name="investment_name" placeholder="Enter investment_name">
-            <label for="initial_amount">Initial Investment:</label>
-            <input type="text" id="initial_amount" name="initial_amount" value="{{ initial_amount|default:'' }}" placeholder="Enter initial amount">
+         <button type="submit">Simulate</button> -->
+        <!-- </form> -->
+         <hr>
+         <h2>Other calculations</h2>
+            <form method="post">
+                {% csrf_token %}
+                <label for="investment_name">Name of your Product:</label>
+                <input type="text" id="investment_name" name="investment_name" placeholder="Enter investment_name">
+                <label for="initial_amount">Initial Investment:</label>
+                <input type="text" id="initial_amount" name="initial_amount" value="{{ initial_amount|default:'' }}" placeholder="Enter initial amount">
 
-            <label for="growth_rate">Growth Rate (%):</label>
-            <input type="text" id="growth_rate" name="growth_rate" value="{{ growth_rate|default:'' }}" placeholder="Enter growth rate (e.g. 10%, etc)">
+                <label for="growth_rate">Growth Rate (%):</label>
+                <input type="text" id="growth_rate" name="growth_rate" value="{{ growth_rate|default:'' }}" placeholder="Enter growth rate (e.g. 10%, etc)">
 
-            <label for="time">Time (in years):</label>
-            <input type="text" id="time" name="time" value="{{ time|default:'' }}" placeholder="Enter time in years">
+                <label for="time">Time (in years):</label>
+                <input type="text" id="time" name="time" value="{{ time|default:'' }}" placeholder="Enter time in years">
 
-            <button type="submit">Calculate</button>
-        </form>
+                <button type="submit">Calculate</button>
+            </form>
 
         {% if result %}
-        <div class="result">
-            <h4>After {{ time }} years, you will have a total of: <strong>{{ result }} {{ investment_name }}</strong></h4><hr>
-            <h4> Assumptions:</h4>
-            <h4>Zero mortality rate and a constant rate of growth</h4>
-        </div>
+            <div class="result">
+                <h4>After {{ time }} years, you will have a total of: <strong>{{ result }} {{ investment_name }}</strong></h4><hr>
+                <h4> Assumptions:</h4>
+                <h4>Zero mortality rate and a constant rate of growth</h4>
+            </div>
         {% endif %}
 
         {% if error %}
-        <div class="error">
-            <p>{{ error }}</p>
-        </div>
+            <div class="error">
+                <p>{{ error }}</p>
+            </div>
         {% endif %}
     </div>
     <!-- <p>Debug: Investment Name = {{ investment_name}}</p>

@@ -2,14 +2,7 @@
 
 {% block content %}
    
-    <style>
-        
-        
-           
-        .space{
-            color: white;
-        }    
-        </style>
+    
     <script>
     
         // Function to add new asset row
@@ -45,10 +38,10 @@
                 <br>Liabilities might be loans, credit card debt, mobile money loans, creditors, or mortgages.</p>
     <div class="container">
         <form method="POST">
-            <br>
             {% csrf_token %}    
             <!-- Assets Section -->
             <h2>List your Assets</h2>
+            <p>The things you own; cars, land, debtors, cash, savings, etc.</p>
             <table id="assetTable">
                 <tr>
                     <th>Asset Name</th>
@@ -61,12 +54,14 @@
                 </tr>
                 {% endfor %}
             </table>
+            
             <button type="button" class="add-line-btn" onclick="addAssetRow()">Add an Asset</button>
             <br>
-            <div class="space">space-betweenspaspace-betweenspa>spacebetween space-between</div>
+           
     <br>
             <!-- Liabilities Section -->
             <h2>List your Liabilities</h2>
+            <p>What you owe; loans, creditors, etc.</p>
             <table id="liabilityTable">
                 <tr>
                     <th>Liability Name</th>
@@ -100,17 +95,17 @@
                 <tr>
                     <td>Total Assets</td>
                     <td><p>  {{ total_assets }}</p></td>
-                    <td></td>
+                    
                 </tr>
                 <tr>
                     <td>Total Liabilities</td>
                     <td><p>{{ total_liabilities }}</p></td>
-                    <td></td>
+                    
                 </tr>
                 <tr>
                     <td>Net Worth</td>
                     <td><p>{{ net_worth }}</p></td>
-                    <td></td>
+                    
                 </tr>
             </tbody>
         </table>
@@ -128,8 +123,9 @@
         <!-- <a href="{% url 'download_pdf' %}" class="btn btn-success mt-3">Download PDF Report</a> -->
         {% endif %}
         <button type="submit" name="download_pdf" class="btn-pdf">Download PDF</button>
-        </div>
-</body>
+    </div>
+    
+
     <script src="https://cdn.jsdelivr.net/npm/autonumeric@4.0.0/dist/autoNumeric.min.js"></script>
     <script>
         function formatNumber(input) {
@@ -177,5 +173,6 @@
     }
 }
     </script>
+</body>
     {% endblock %}
-</html>
+
